@@ -222,7 +222,7 @@
       <button id="addHashData">Add Hash of Data (OP_SHA256)</button>
       <p>Add Pub Key Hash of Recipient</p>
 
-      <input placeholder="change receiever" type="text" id="changeRecipient" />
+      <input placeholder="change receiever" type="text" id="receiever" />
       <button id="addPubKeyHash">Add PubKeyHash</button>
     </div>
 
@@ -333,9 +333,12 @@
       document.addEventListener("DOMContentLoaded", async () => {
         //check localStorage for keys
         keys = JSON.parse(localStorage.getItem("keys"));
+        recipientKeys = JSON.parse(localStorage.getItem("recipientKeys"));
         if (!keys) {
           keys = generateKeys();
+          recipientKeys = generateKeys();
           localStorage.setItem("keys", JSON.stringify(keys));
+          localStorage.setItem("recipientKeys", JSON.stringify(recipientKeys));
         }
 
         //display keys
@@ -343,19 +346,7 @@
         document.getElementById("privateKey").innerHTML = keys.privateKey;
         document.getElementById("publicKey").innerHTML = keys.publicKey;
         document.getElementById("address").innerHTML = keys.address;
-        //display balance
-        //
-        //display recipient address
-        //check localStorage for recipient address
-        recipientKeys = localStorage.getItem("recipientKeys");
-        let recipientKeysAddress;
-        if (!recipientKeys) {
-          recipientKeys = generateKeys();
-          localStorage.setItem("recipientKeys", JSON.stringify(recipientKeys));
-        }
-        recipientKeysAddress = JSON.parse(recipientKeys).address;
-        //display recipient address
-        document.getElementById("recipient").innerHTML = recipientKeysAddress;
+        document.getElementById("recipient").innerHTML = recipientKeys.address;
         //display balance
         const balance = await getBalance(keys.address);
         document.getElementById("balance").innerHTML = balance;
@@ -444,9 +435,7 @@
       };
       const addPubKeyHash = () => {
         let receiever =
-          document.getElementById("changeRecipient").value.length > 0
-            ? document.getElementById("changeRecipient").value
-            : recipientKeysAddress;
+          document.getElementById("receiver").value || recipientKeys.address;
         const pubKeyHash = bsv.Script.buildPublicKeyHashOut(receiever).toHex();
         currentStack.push(pubKeyHash);
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
