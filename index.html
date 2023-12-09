@@ -347,7 +347,7 @@
         document.getElementById("publicKey").innerHTML = keys.publicKey;
         document.getElementById("address").innerHTML = keys.address;
         document.getElementById("recipient").innerHTML = recipientKeys.address;
-        document.getElementById("receiver").innerHTML = recipientKeys.address;
+        document.getElementById("receiver").value = recipientKeys.address;
         //display balance
         const balance = await getBalance(keys.address);
         document.getElementById("balance").innerHTML = balance;
