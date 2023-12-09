@@ -222,7 +222,7 @@
       <button id="addHashData">Add Hash of Data (OP_SHA256)</button>
       <p>Add Pub Key Hash of Recipient</p>
 
-      <input placeholder="change receiever" type="text" id="receiever" />
+      <input placeholder="change receiever" type="text" id="receiver" />
       <button id="addPubKeyHash">Add PubKeyHash</button>
     </div>
 
@@ -251,7 +251,7 @@
       <p id="lockResults"></p>
     </div>
     <div class="container" id="broadcastBinary">
-      <h2>Broadcast Binary</h2>
+      <h2>Generated Binary</h2>
       <p><strong>Binary:</strong> <span id="binary"></span></p>
     </div>
     <div class="container" id="redeemLock">
@@ -347,6 +347,7 @@
         document.getElementById("publicKey").innerHTML = keys.publicKey;
         document.getElementById("address").innerHTML = keys.address;
         document.getElementById("recipient").innerHTML = recipientKeys.address;
+        document.getElementById("receiver").innerHTML = recipientKeys.address;
         //display balance
         const balance = await getBalance(keys.address);
         document.getElementById("balance").innerHTML = balance;
@@ -434,12 +435,7 @@
         });
       };
       const addPubKeyHash = () => {
-        let receiever;
-        if (document.getElementById("receiver").value) {
-          receiever = document.getElementById("receiver").value;
-        } else {
-          receiever = recipientKeys.address;
-        }
+        const receiever = document.getElementById("receiver").value;
         const pubKeyHash = bsv.Script.buildPublicKeyHashOut(receiever).toHex();
         currentStack.push(pubKeyHash);
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
