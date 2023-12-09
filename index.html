@@ -263,7 +263,6 @@
     </div>
     <script>
       const Buffer = bsv.deps.Buffer;
-
       const generateKeys = () => {
         const mnemonic = bsvMnemonic.fromRandom();
         const privateKey = bsv.PrivateKey.fromRandom();
@@ -549,9 +548,12 @@
         .getElementById("importMnemonic")
         .addEventListener("click", () => {
           const mnemonic = document.getElementById("mnemonicInput").value;
-          const privateKey = bsvMnemonic.fromRandom(mnemonic);
+          //   from mnemonic string
+          const mnemonic2 = bsvMnemonic.fromString(mnemonic);
+          const privateKey = bsv.PrivateKey.fromRandom();
           const publicKey = bsv.PublicKey.fromPrivateKey(privateKey);
           const address = bsv.Address.fromPublicKey(publicKey);
+
           const keys = {
             mnemonic: mnemonic,
             privateKey: privateKey.toString(),
