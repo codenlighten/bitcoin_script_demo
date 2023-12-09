@@ -292,12 +292,12 @@
       //display recipient address
       //check localStorage for recipient address
       let recipientKeys = localStorage.getItem("recipientKeys");
+      let recipientKeysAddress;
       if (!recipientKeys) {
         recipientKeys = generateKeys();
         localStorage.setItem("recipientKeys", JSON.stringify(recipientKeys));
       }
-      const recipientKeysAddress = JSON.parse(recipientKeys).address;
-
+      recipientKeysAddress = JSON.parse(recipientKeys).address;
       //display recipient address
       document.getElementById("recipient").innerHTML = recipientKeysAddress;
       const getUtxos = async (address) => {
