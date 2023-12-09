@@ -228,17 +228,31 @@
       <p><strong>Stack:</strong> <span id="stack"></span></p>
     </div>
     <div class="container" id="broadcastLock">
-      <h2>Generate Broadcast Lock</h2>
+      <h2>Generate Lock Binary</h2>
       <button id="broadcast">Broadcast</button>
+      <p id="lockResults"></p>
     </div>
     <div class="container" id="broadcastBinary">
       <h2>Broadcast Binary</h2>
       <p><strong>Binary:</strong> <span id="binary"></span></p>
     </div>
-    <div class="container" id="broadcastResults">
-      <h2>Broadcast Results</h2>
-      <p><strong>Transaction ID:</strong> <span id="txid"></span></p>
-      <p><strong>Transaction Hex:</strong> <span id="txHex"></span></p>
+    <div class="container" id="redeemLock">
+      <h2>Redeem a Locking Script</h2>
+      <!-- enter txid to redeem -->
+      <p><strong>Enter Transaction ID to Redeem:</strong></p>
+      <input type="text" id="txidInput" />
+      <!-- add script for unlock script -->
+      <button id="redeem">Redeem</button>
+      <!-- current locking asm -->
+      <!-- current unlocking asm -->
+      <!-- current locking hex -->
+      <!-- current unlocking hex -->
+      <!-- current locking binary -->
+      <!-- current unlocking binary -->
+      <div id="currentLock"></div>
+      <div id="currentUnlock"></div>
+      <!-- combined script -->
+      <div id="combinedScript"></div>
     </div>
     <script>
       const Buffer = bsv.deps.Buffer;
@@ -454,11 +468,74 @@
         const txHex = tx.toString();
         //add to broadcast binary
         document.getElementById("binary").innerHTML = txHex;
+        document.getElementById("lockResults").innerHTML = txHex;
+        // addeventlistener to copy to clipboard
+        document.getElementById("lockResults").addEventListener("click", () => {
+          navigator.clipboard.writeText(txHex);
+          alert("Copied to clipboard");
+        });
       };
 
       document.getElementById("broadcast").addEventListener("click", () => {
         buildLockingScript();
       });
+      const getTxInfo = async (txid) => {
+        const response = await fetch(
+          // whatsOnChain
+          `https://api.whatsonchain.com/v1/bsv/main/tx/${txid}`
+        );
+        const res = await response.json();
+        return res;
+      };
+      const getTxHex = async (txid) => {
+        const response = await fetch(
+          // whatsOnChain
+          `https://api.whatsonchain.com/v1/bsv/main/tx/${txid}/hex`
+        );
+        const res = await response.text();
+        return res;
+      };
+      const redeemLock = async () => {
+        // use current opcode stack for users unlock script
+        const txid = document.getElementById("txidInput").value;
+        const txInfo = await getTxInfo(txid);
+        const txHex = await getTxHex(txid);
+        console.log(txInfo);
+        console.log(txHex);
+        const tx = new bsv.Transaction(txHex);
+        const lockingScript = tx.outputs[0].script;
+        const unlockingScript = bsv.Script.fromASM(currentStack.join(" "));
+        const combinedScript = bsv.Script.buildScriptHashOut(
+          bsv.crypto.Hash.sha256(unlockingScript.toBuffer())
+        );
+        console.log(combinedScript);
+        const combinedScriptHex = combinedScript.toHex();
+        console.log(combinedScriptHex);
+        const combinedScriptAsm = combinedScript.toASM();
+        console.log(combinedScriptAsm);
+        document.getElementById("currentLock").innerHTML =
+          lockingScript.toASM();
+        document.getElementById("currentUnlock").innerHTML =
+          unlockingScript.toASM();
+        document.getElementById("combinedScript").innerHTML =
+          combinedScript.toASM();
+        const tx2 = new bsv.Transaction();
+        tx2.from({
+          txId: txid,
+          outputIndex: 0,
+          script: lockingScript,
+          satoshis: txInfo.vout[0].value,
+        });
+        // set input script to unlock script
+        tx2.setInputScript(0, unlockingScript);
+        tx2.to(keys.address, 10);
+        tx2.change(recipientKeysAddress);
+        tx2.feePerKb(15);
+        tx2.sign(combinedScript);
+        const tx2Hex = tx2.toString();
+        console.log(tx2Hex);
+        document.getElementById("binary").innerHTML = tx2Hex;
+      };
     </script>
   </body>
 </html>
