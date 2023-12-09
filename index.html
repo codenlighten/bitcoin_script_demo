@@ -444,8 +444,9 @@
       };
       const addPubKeyHash = () => {
         let receiever =
-          document.getElementById("changeRecipient").value ||
-          recipientKeysAddress;
+          document.getElementById("changeRecipient").value.length > 0
+            ? document.getElementById("changeRecipient").value
+            : recipientKeysAddress;
         const pubKeyHash = bsv.Script.buildPublicKeyHashOut(receiever).toHex();
         currentStack.push(pubKeyHash);
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
