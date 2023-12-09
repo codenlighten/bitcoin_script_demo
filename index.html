@@ -8,6 +8,47 @@
     <script src="https://cdn.jsdelivr.net/npm/bsv@1.5.0/bsv-mnemonic.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bsv@1.5.0/bsv-ecies.min.js"></script>
     <title>Bitcoin SV Locking Script Examples</title>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+      .container {
+        margin: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+      }
+      #header {
+        margin-top: 0;
+      }
+      #examples {
+        display: flex;
+        flex-direction: column;
+      }
+      #examples button {
+        margin: 10px 0;
+      }
+      #examples input {
+        margin: 10px 0;
+      }
+      #examples select {
+        margin: 10px 0;
+      }
+      #examples p {
+        margin: 10px 0;
+      }
+      #examples #currentLockScript {
+        margin-top: 20px;
+      }
+      #examples #broadcastLock {
+        margin-top: 20px;
+      }
+      #examples #broadcastBinary {
+        margin-top: 20px;
+      }
+      #examples #broadcastResults {
+        margin-top: 20px;
+      }
+    </style>
   </head>
   <body>
     <div class="container" id="header">
@@ -161,9 +202,11 @@
       <p>Add Data</p>
       <input type="text" id="data" />
       <button id="addData">Add Data</button>
+      <button id="addHashData">Add Hash of Data (OP_SHA256)</button>
+      <p>Add Pub Key Hash of Recipient</p>
+      <button id="addPubKeyHash">Add PubKeyHash</button>
     </div>
-    <p>Add Pub Key Hash of Recipient</p>
-    <button id="addPubKeyHash">Add PubKeyHash</button>
+
     <div class="container" id="currentLockScript">
       <h2>Current Locking Script</h2>
       <p>
@@ -189,6 +232,8 @@
       <p><strong>Transaction Hex:</strong> <span id="txHex"></span></p>
     </div>
     <script>
+      const Buffer = bsv.deps.Buffer;
+
       const generateKeys = () => {
         const mnemonic = bsvMnemonic.fromRandom();
         const privateKey = bsv.PrivateKey.fromRandom();
@@ -246,6 +291,7 @@
         return utxos;
       };
       let currentStack = [];
+
       const hexToBinary = (hex) => {
         return parseInt(hex, 16).toString(2);
       };
@@ -260,7 +306,19 @@
       };
       const addData = () => {
         const data = document.getElementById("data").value;
-        currentStack.push(data);
+        currentStack.push(Buffer.from(data).toString("hex"));
+        console.log(currentStack);
+        const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+        const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+        document.getElementById("hex").innerHTML = hex;
+        document.getElementById("asm").innerHTML = asm;
+        document.getElementById("binary").innerHTML = hexToBinary(hex);
+        console.log(hex);
+      };
+      const addPubKeyHash = () => {
+        const pubKeyHash =
+          bsv.Script.buildPublicKeyHashOut(recipientKeysAddress).toHex();
+        currentStack.push(pubKeyHash);
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
         const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
         document.getElementById("hex").innerHTML = hex;
@@ -268,17 +326,18 @@
         document.getElementById("binary").innerHTML = hexToBinary(hex);
       };
 
-      //add pub key hash
-      const addPubKeyHash = () => {
-        const recipientAddress = document.getElementById("recipient").innerHTML;
-        const recipientPubKeyHash =
-          bsv.Address.fromString(recipientAddress).hashBuffer.toString("hex");
-        currentStack.push(recipientPubKeyHash);
+      const addHashData = () => {
+        const data = document.getElementById("data").value;
+        const hash = bsv.crypto.Hash.sha256(Buffer.from(data)).toString("hex");
+        console.log(hash);
+        currentStack.push(hash);
+        console.log(currentStack);
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
         const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
         document.getElementById("hex").innerHTML = hex;
         document.getElementById("asm").innerHTML = asm;
         document.getElementById("binary").innerHTML = hexToBinary(hex);
+        console.log(hex);
       };
 
       document.getElementById("addOpCode").addEventListener("click", addOpCode);
