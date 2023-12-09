@@ -11,6 +11,7 @@
     <style>
       body {
         font-family: sans-serif;
+        word-wrap: break-word;
       }
       .container {
         margin: 20px;
@@ -218,6 +219,14 @@
       <p><strong>Asm:</strong> <span id="asm"></span></p>
       <p><strong>Binary:</strong> <span id="binary"></span></p>
     </div>
+    <div class="container" id="currentStack">
+      <h2>Current Stack</h2>
+      <p>
+        The following is the current stack. It is updated when you click the
+        "Add OpCode" button.
+      </p>
+      <p><strong>Stack:</strong> <span id="stack"></span></p>
+    </div>
     <div class="container" id="broadcastLock">
       <h2>Generate Broadcast Lock</h2>
       <button id="broadcast">Broadcast</button>
@@ -303,6 +312,25 @@
         document.getElementById("hex").innerHTML = hex;
         document.getElementById("asm").innerHTML = asm;
         document.getElementById("binary").innerHTML = hexToBinary(hex);
+        const stackEl = document.createElement("div");
+        stackEl.innerHTML = opCode;
+        document.getElementById("stack").appendChild(stackEl);
+        stackEl.addEventListener("click", () => {
+          //remove from stack
+          const index = currentStack.indexOf(opCode);
+          if (index > -1) {
+            currentStack.splice(index, 1);
+          }
+          console.log(currentStack);
+          //remove from stack display
+          stackEl.remove();
+          //update locking script
+          const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+          const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+          document.getElementById("hex").innerHTML = hex;
+          document.getElementById("asm").innerHTML = asm;
+          document.getElementById("binary").innerHTML = hexToBinary(hex);
+        });
       };
       const addData = () => {
         const data = document.getElementById("data").value;
@@ -314,6 +342,25 @@
         document.getElementById("asm").innerHTML = asm;
         document.getElementById("binary").innerHTML = hexToBinary(hex);
         console.log(hex);
+        const stackEl = document.createElement("div");
+        stackEl.innerHTML = data;
+        document.getElementById("stack").appendChild(stackEl);
+        stackEl.addEventListener("click", () => {
+          //remove from stack
+          const index = currentStack.indexOf(Buffer.from(data).toString("hex"));
+          if (index > -1) {
+            currentStack.splice(index, 1);
+          }
+          console.log(currentStack);
+          //remove from stack display
+          stackEl.remove();
+          //update locking script
+          const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+          const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+          document.getElementById("hex").innerHTML = hex;
+          document.getElementById("asm").innerHTML = asm;
+          document.getElementById("binary").innerHTML = hexToBinary(hex);
+        });
       };
       const addPubKeyHash = () => {
         const pubKeyHash =
@@ -324,6 +371,27 @@
         document.getElementById("hex").innerHTML = hex;
         document.getElementById("asm").innerHTML = asm;
         document.getElementById("binary").innerHTML = hexToBinary(hex);
+        console.log(hex);
+        const stackEl = document.createElement("div");
+        stackEl.innerHTML = pubKeyHash;
+        document.getElementById("stack").appendChild(stackEl);
+        stackEl.addEventListener("click", () => {
+          //remove from stack
+          const index = currentStack.indexOf(pubKeyHash);
+          if (index > -1) {
+            currentStack.splice(index, 1);
+          }
+          //remove from stack display
+          stackEl.remove();
+          console.log(currentStack);
+
+          //update locking script
+          const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+          const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+          document.getElementById("hex").innerHTML = hex;
+          document.getElementById("asm").innerHTML = asm;
+          document.getElementById("binary").innerHTML = hexToBinary(hex);
+        });
       };
 
       const addHashData = () => {
@@ -338,6 +406,25 @@
         document.getElementById("asm").innerHTML = asm;
         document.getElementById("binary").innerHTML = hexToBinary(hex);
         console.log(hex);
+        const stackEl = document.createElement("div");
+        stackEl.innerHTML = hash;
+        document.getElementById("stack").appendChild(stackEl);
+        stackEl.addEventListener("click", () => {
+          //remove from stack
+          const index = currentStack.indexOf(hash);
+          if (index > -1) {
+            currentStack.splice(index, 1);
+          }
+          console.log(currentStack);
+          //remove from stack display
+          stackEl.remove();
+          //update locking script
+          const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+          const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+          document.getElementById("hex").innerHTML = hex;
+          document.getElementById("asm").innerHTML = asm;
+          document.getElementById("binary").innerHTML = hexToBinary(hex);
+        });
       };
 
       document.getElementById("addOpCode").addEventListener("click", addOpCode);
