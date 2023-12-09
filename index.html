@@ -70,6 +70,13 @@
       <p><strong>Public Key:</strong> <span id="publicKey"></span></p>
       <p><strong>Address:</strong> <span id="address"></span></p>
     </div>
+    <div class="container" id="importMnemonic">
+      <h2>Import Mnemonic Phrase</h2>
+      <!-- input -->
+      <p><strong>Enter Mnemonic Phrase:</strong></p>
+      <input type="text" id="mnemonicInput" />
+      <button id="importMnemonic">Import Mnemonic</button>
+    </div>
     <div class="container" id="recipientAddress">
       <h2>Recipient Address</h2>
       <p>
@@ -536,6 +543,28 @@
         console.log(tx2Hex);
         document.getElementById("binary").innerHTML = tx2Hex;
       };
+      document.getElementById("redeem").addEventListener("click", redeemLock);
+      //import mnemonic
+      document
+        .getElementById("importMnemonic")
+        .addEventListener("click", () => {
+          const mnemonic = document.getElementById("mnemonicInput").value;
+          const privateKey = bsvMnemonic.fromRandom(mnemonic);
+          const publicKey = bsv.PublicKey.fromPrivateKey(privateKey);
+          const address = bsv.Address.fromPublicKey(publicKey);
+          const keys = {
+            mnemonic: mnemonic,
+            privateKey: privateKey.toString(),
+            publicKey: publicKey.toString(),
+            address: address.toString(),
+          };
+          localStorage.setItem("keys", JSON.stringify(keys));
+          //display keys
+          document.getElementById("mnemonic").innerHTML = keys.mnemonic;
+          document.getElementById("privateKey").innerHTML = keys.privateKey;
+          document.getElementById("publicKey").innerHTML = keys.publicKey;
+          document.getElementById("address").innerHTML = keys.address;
+        });
     </script>
   </body>
 </html>
