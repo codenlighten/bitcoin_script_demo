@@ -319,9 +319,11 @@
         return balance;
       };
       //onload
+      let keys;
+      let recipientKeys;
       document.addEventListener("DOMContentLoaded", async () => {
         //check localStorage for keys
-        let keys = JSON.parse(localStorage.getItem("keys"));
+        keys = JSON.parse(localStorage.getItem("keys"));
         if (!keys) {
           keys = generateKeys();
           localStorage.setItem("keys", JSON.stringify(keys));
@@ -336,7 +338,7 @@
         //
         //display recipient address
         //check localStorage for recipient address
-        let recipientKeys = localStorage.getItem("recipientKeys");
+        recipientKeys = localStorage.getItem("recipientKeys");
         let recipientKeysAddress;
         if (!recipientKeys) {
           recipientKeys = generateKeys();
