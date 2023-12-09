@@ -60,7 +60,10 @@
         locking script is used to lock funds to an address. The locking script
         is also known as a scriptPubKey. The stack structure and OP CODES are
         modeled after the Forth programming language. The stack is a LIFO (last
-        in first out) data structure.
+        in first out) data structure. The Locking Script and Unlocking Script
+        are combined to create a combined script. The combined script is
+        evaluated to determine if the funds can be spent. If the combined script
+        evaluates to true, the funds can be spent.
       </p>
     </div>
     <div class="container" id="myKeys">
