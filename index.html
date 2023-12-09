@@ -221,6 +221,8 @@
       <button id="addData">Add Data</button>
       <button id="addHashData">Add Hash of Data (OP_SHA256)</button>
       <p>Add Pub Key Hash of Recipient</p>
+
+      <input placeholder="change receiever" type="text" id="changeRecipient" />
       <button id="addPubKeyHash">Add PubKeyHash</button>
     </div>
 
@@ -441,8 +443,10 @@
         });
       };
       const addPubKeyHash = () => {
-        const pubKeyHash =
-          bsv.Script.buildPublicKeyHashOut(recipientKeysAddress).toHex();
+        let receiever =
+          document.getElementById("changeRecipient").value ||
+          recipientKeysAddress;
+        const pubKeyHash = bsv.Script.buildPublicKeyHashOut(receiever).toHex();
         currentStack.push(pubKeyHash);
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
         const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
