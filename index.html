@@ -434,8 +434,12 @@
         });
       };
       const addPubKeyHash = () => {
-        let receiever =
-          document.getElementById("receiver").value || recipientKeys.address;
+        let receiever;
+        if (document.getElementById("receiver").value) {
+          receiever = document.getElementById("receiver").value;
+        } else {
+          receiever = recipientKeys.address;
+        }
         const pubKeyHash = bsv.Script.buildPublicKeyHashOut(receiever).toHex();
         currentStack.push(pubKeyHash);
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
