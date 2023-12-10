@@ -1,172 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://unpkg.com/bsv@1.5"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bsv@1.5.0/bsv-message.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bsv@1.5.0/bsv-mnemonic.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bsv@1.5.0/bsv-ecies.min.js"></script>
-    <title>Bitcoin SV Locking Script Examples</title>
-    <style>
-      body {
-        font-family: sans-serif;
-        word-wrap: break-word;
-      }
-      .container {
-        margin: 20px;
-        padding: 20px;
-        border: 1px solid #ccc;
-      }
-      #header {
-        margin-top: 0;
-      }
-      #examples {
-        display: flex;
-        flex-direction: column;
-      }
-      #examples button {
-        margin: 10px 0;
-      }
-      #examples input {
-        margin: 10px 0;
-      }
-      #examples select {
-        margin: 10px 0;
-      }
-      #examples p {
-        margin: 10px 0;
-      }
-      #examples #currentLockScript {
-        margin-top: 20px;
-      }
-      #examples #broadcastLock {
-        margin-top: 20px;
-      }
-      #examples #broadcastBinary {
-        margin-top: 20px;
-      }
-      #examples #broadcastResults {
-        margin-top: 20px;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container" id="header">
-      <h1>Bitcoin Script Builder</h1>
-      <p>
-        <!-- describe how it uses forth like stack -->
-        This tool allows you to build a script using a stack. The locking script
-        is used to lock funds to an address. The locking script is also known as
-        a scriptPubKey. The stack structure and OP CODES are modeled after the
-        Forth programming language. The stack is a LIFO (last in first out) data
-        structure. The Locking Script and Unlocking Script are combined to
-        create a combined script. The combined script is evaluated to determine
-        if the funds can be spent. If the combined script evaluates to true, the
-        funds can be spent.
-      </p>
-    </div>
-    <div class="container" id="myKeys">
-      <h2>My Keys</h2>
-      <p>
-        The following keys are used in the examples. The private keys are
-        generated from the mnemonic phrase using the BSV library.
-      </p>
-      <p><strong>Mnemonic Phrase:</strong> <span id="mnemonic"></span></p>
-      <p><strong>Private Key:</strong> <span id="privateKey"></span></p>
-      <p><strong>Public Key:</strong> <span id="publicKey"></span></p>
-      <p><strong>Address:</strong> <span id="address"></span></p>
-      <!-- balance -->
-      <p><strong>Balance:</strong> <span id="balance"></span></p>
-    </div>
-    <div class="container" id="importMnemonic">
-      <h2>Import Mnemonic Phrase</h2>
-      <!-- input -->
-      <p><strong>Enter Mnemonic Phrase:</strong></p>
-      <input type="text" id="mnemonicInput" />
-      <button id="importMnemonic">Import Mnemonic</button>
-    </div>
-    <div class="container" id="recipientAddress">
-      <h2>Recipient Address</h2>
-      <p>
-        The following address is used as the recipient address in the examples.
-      </p>
-      <p><strong>Address:</strong> <span id="recipient"></span></p>
-    </div>
-    <div class="container" id="examples">
-      <h2>Examples</h2>
-      <select name="" id="opcodeSelect">
-        <option value="">Choose OpCode</option>
-        <option value="OP_0">OP_0</option>
-        <option value="OP_1">OP_1</option>
-        <option value="OP_2">OP_2</option>
-        <option value="OP_3">OP_3</option>
-        <option value="OP_4">OP_4</option>
-        <option value="OP_5">OP_5</option>
-        <option value="OP_6">OP_6</option>
-        <option value="OP_7">OP_7</option>
-        <option value="OP_8">OP_8</option>
-        <option value="OP_9">OP_9</option>
-        <option value="OP_10">OP_10</option>
-        <option value="OP_11">OP_11</option>
-        <option value="OP_12">OP_12</option>
-        <option value="OP_13">OP_13</option>
-        <option value="OP_14">OP_14</option>
-        <option value="OP_15">OP_15</option>
-        <option value="OP_16">OP_16</option>
-        <option value="OP_1NEGATE">OP_1NEGATE</option>
-        <option value="OP_1ADD">OP_1ADD</option>
-        <option value="OP_1SUB">OP_1SUB</option>
-        <option value="OP_2DIV">OP_2DIV</option>
-        <option value="OP_2DROP">OP_2DROP</option>
-        <option value="OP_2DUP">OP_2DUP</option>
-        <option value="OP_2MUL">OP_2MUL</option>
-        <option value="OP_2OVER">OP_2OVER</option>
-        <option value="OP_2ROT">OP_2ROT</option>
-        <option value="OP_2SWAP">OP_2SWAP</option>
-        <option value="OP_3DUP">OP_3DUP</option>
-        <option value="OP_ABS">OP_ABS</option>
-        <option value="OP_ADD">OP_ADD</option>
-        <option value="OP_AND">OP_AND</option>
-        <option value="OP_BOOLAND">OP_BOOLAND</option>
-        <option value="OP_BOOLOR">OP_BOOLOR</option>
-        <option value="OP_CAT">OP_CAT</option>
-        <!-- <option value="OP_CHECKLOCKTIMEVERIFY">OP_CHECKLOCKTIMEVERIFY</option> -->
-        <option value="OP_CHECKMULTISIG">OP_CHECKMULTISIG</option>
-        <option value="OP_CHECKMULTISIGVERIFY">OP_CHECKMULTISIGVERIFY</option>
-        <option value="OP_CHECKSIG">OP_CHECKSIG</option>
-        <option value="OP_CHECKSIGVERIFY">OP_CHECKSIGVERIFY</option>
-        <option value="OP_CODESEPARATOR">OP_CODESEPARATOR</option>
-        <option value="OP_DEPTH">OP_DEPTH</option>
-        <option value="OP_DIV">OP_DIV</option>
-        <option value="OP_DROP">OP_DROP</option>
-        <option value="OP_DUP">OP_DUP</option>
-        <option value="OP_ELSE">OP_ELSE</option>
-        <option value="OP_ENDIF">OP_ENDIF</option>
-        <option value="OP_EQUAL">OP_EQUAL</option>
-        <option value="OP_EQUALVERIFY">OP_EQUALVERIFY</option>
-        <option value="OP_FALSE">OP_FALSE</option>
-        <option value="OP_FROMALTSTACK">OP_FROMALTSTACK</option>
-        <option value="OP_GREATERTHAN">OP_GREATERTHAN</option>
-        <option value="OP_GREATERTHANOREQUAL">OP_GREATERTHANOREQUAL</option>
-        <option value="OP_HASH160">OP_HASH160</option>
-        <option value="OP_HASH256">OP_HASH256</option>
-        <option value="OP_IF">OP_IF</option>
-        <option value="OP_IFDUP">OP_IFDUP</option>
-        <!-- <option value="OP_INVALIDOPCODE">OP_INVALIDOPCODE</option> -->
-        <option value="OP_INVERT">OP_INVERT</option>
-        <option value="OP_LEFT">OP_LEFT</option>
-        <option value="OP_LESSTHAN">OP_LESSTHAN</option>
-        <option value="OP_LESSTHANOREQUAL">OP_LESSTHANOREQUAL</option>
-        <option value="OP_LSHIFT">OP_LSHIFT</option>
-        <option value="OP_MAX">OP_MAX</option>
-        <option value="OP_MIN">OP_MIN</option>
-        <option value="OP_MOD">OP_MOD</option>
-        <option value="OP_MUL">OP_MUL</option>
-        <option value="OP_NEGATE">OP_NEGATE</option>
-        <option value="OP_NIP">OP_NIP</option>
-        <option value="OP_NOP">OP_NOP</option>
-        <!-- <option value="OP_NOP1">OP_NOP1</option>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="https://unpkg.com/bsv@1.5"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bsv@1.5.0/bsv-message.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bsv@1.5.0/bsv-mnemonic.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bsv@1.5.0/bsv-ecies.min.js"></script>
+		<title>Bitcoin SV Locking Script Examples</title>
+		<style>
+			body {
+				font-family: sans-serif;
+				word-wrap: break-word;
+			}
+			.container {
+				margin: 20px;
+				padding: 20px;
+				border: 1px solid #ccc;
+			}
+			#header {
+				margin-top: 0;
+			}
+			#examples {
+				display: flex;
+				flex-direction: column;
+			}
+			#examples button {
+				margin: 10px 0;
+			}
+			#examples input {
+				margin: 10px 0;
+			}
+			#examples select {
+				margin: 10px 0;
+			}
+			#examples p {
+				margin: 10px 0;
+			}
+			#examples #currentLockScript {
+				margin-top: 20px;
+			}
+			#examples #broadcastLock {
+				margin-top: 20px;
+			}
+			#examples #broadcastBinary {
+				margin-top: 20px;
+			}
+			#examples #broadcastResults {
+				margin-top: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container" id="header">
+			<h1>Bitcoin Script Builder</h1>
+			<p>
+				<!-- describe how it uses forth like stack -->
+				This tool allows you to build a script using a stack. The locking script
+				is used to lock funds to an address. The locking script is also known as
+				a scriptPubKey. The stack structure and OP CODES are modeled after the
+				Forth programming language. The stack is a LIFO (last in first out) data
+				structure. The Locking Script and Unlocking Script are combined to
+				create a combined script. The combined script is evaluated to determine
+				if the funds can be spent. If the combined script evaluates to true, the
+				funds can be spent.
+			</p>
+		</div>
+		<div class="container" id="myKeys">
+			<h2>My Keys</h2>
+			<p>
+				The following keys are used in the examples. The private keys are
+				generated from the mnemonic phrase using the BSV library.
+			</p>
+			<p><strong>Mnemonic Phrase:</strong> <span id="mnemonic"></span></p>
+			<p><strong>Private Key:</strong> <span id="privateKey"></span></p>
+			<p><strong>Public Key:</strong> <span id="publicKey"></span></p>
+			<p><strong>Address:</strong> <span id="address"></span></p>
+			<!-- balance -->
+			<p><strong>Balance:</strong> <span id="balance"></span></p>
+		</div>
+		<div class="container" id="importMnemonic">
+			<h2>Import Mnemonic Phrase</h2>
+			<!-- input -->
+			<p><strong>Enter Mnemonic Phrase:</strong></p>
+			<input type="text" id="mnemonicInput" />
+			<button id="importMnemonic">Import Mnemonic</button>
+		</div>
+		<div class="container" id="recipientAddress">
+			<h2>Recipient Address</h2>
+			<p>
+				The following address is used as the recipient address in the examples.
+			</p>
+			<p><strong>Address:</strong> <span id="recipient"></span></p>
+		</div>
+		<div class="container" id="examples">
+			<h2>Examples</h2>
+			<select name="" id="opcodeSelect">
+				<option value="">Choose OpCode</option>
+				<option value="OP_0">OP_0</option>
+				<option value="OP_1">OP_1</option>
+				<option value="OP_2">OP_2</option>
+				<option value="OP_3">OP_3</option>
+				<option value="OP_4">OP_4</option>
+				<option value="OP_5">OP_5</option>
+				<option value="OP_6">OP_6</option>
+				<option value="OP_7">OP_7</option>
+				<option value="OP_8">OP_8</option>
+				<option value="OP_9">OP_9</option>
+				<option value="OP_10">OP_10</option>
+				<option value="OP_11">OP_11</option>
+				<option value="OP_12">OP_12</option>
+				<option value="OP_13">OP_13</option>
+				<option value="OP_14">OP_14</option>
+				<option value="OP_15">OP_15</option>
+				<option value="OP_16">OP_16</option>
+				<option value="OP_1NEGATE">OP_1NEGATE</option>
+				<option value="OP_1ADD">OP_1ADD</option>
+				<option value="OP_1SUB">OP_1SUB</option>
+				<option value="OP_2DIV">OP_2DIV</option>
+				<option value="OP_2DROP">OP_2DROP</option>
+				<option value="OP_2DUP">OP_2DUP</option>
+				<option value="OP_2MUL">OP_2MUL</option>
+				<option value="OP_2OVER">OP_2OVER</option>
+				<option value="OP_2ROT">OP_2ROT</option>
+				<option value="OP_2SWAP">OP_2SWAP</option>
+				<option value="OP_3DUP">OP_3DUP</option>
+				<option value="OP_ABS">OP_ABS</option>
+				<option value="OP_ADD">OP_ADD</option>
+				<option value="OP_AND">OP_AND</option>
+				<option value="OP_BOOLAND">OP_BOOLAND</option>
+				<option value="OP_BOOLOR">OP_BOOLOR</option>
+				<option value="OP_CAT">OP_CAT</option>
+				<!-- <option value="OP_CHECKLOCKTIMEVERIFY">OP_CHECKLOCKTIMEVERIFY</option> -->
+				<option value="OP_CHECKMULTISIG">OP_CHECKMULTISIG</option>
+				<option value="OP_CHECKMULTISIGVERIFY">OP_CHECKMULTISIGVERIFY</option>
+				<option value="OP_CHECKSIG">OP_CHECKSIG</option>
+				<option value="OP_CHECKSIGVERIFY">OP_CHECKSIGVERIFY</option>
+				<option value="OP_CODESEPARATOR">OP_CODESEPARATOR</option>
+				<option value="OP_DEPTH">OP_DEPTH</option>
+				<option value="OP_DIV">OP_DIV</option>
+				<option value="OP_DROP">OP_DROP</option>
+				<option value="OP_DUP">OP_DUP</option>
+				<option value="OP_ELSE">OP_ELSE</option>
+				<option value="OP_ENDIF">OP_ENDIF</option>
+				<option value="OP_EQUAL">OP_EQUAL</option>
+				<option value="OP_EQUALVERIFY">OP_EQUALVERIFY</option>
+				<option value="OP_FALSE">OP_FALSE</option>
+				<option value="OP_FROMALTSTACK">OP_FROMALTSTACK</option>
+				<option value="OP_GREATERTHAN">OP_GREATERTHAN</option>
+				<option value="OP_GREATERTHANOREQUAL">OP_GREATERTHANOREQUAL</option>
+				<option value="OP_HASH160">OP_HASH160</option>
+				<option value="OP_HASH256">OP_HASH256</option>
+				<option value="OP_IF">OP_IF</option>
+				<option value="OP_IFDUP">OP_IFDUP</option>
+				<!-- <option value="OP_INVALIDOPCODE">OP_INVALIDOPCODE</option> -->
+				<option value="OP_INVERT">OP_INVERT</option>
+				<option value="OP_LEFT">OP_LEFT</option>
+				<option value="OP_LESSTHAN">OP_LESSTHAN</option>
+				<option value="OP_LESSTHANOREQUAL">OP_LESSTHANOREQUAL</option>
+				<option value="OP_LSHIFT">OP_LSHIFT</option>
+				<option value="OP_MAX">OP_MAX</option>
+				<option value="OP_MIN">OP_MIN</option>
+				<option value="OP_MOD">OP_MOD</option>
+				<option value="OP_MUL">OP_MUL</option>
+				<option value="OP_NEGATE">OP_NEGATE</option>
+				<option value="OP_NIP">OP_NIP</option>
+				<option value="OP_NOP">OP_NOP</option>
+				<!-- <option value="OP_NOP1">OP_NOP1</option>
         <option value="OP_NOP10">OP_NOP10</option>
         <option value="OP_NOP2">OP_NOP2</option>
         <option value="OP_NOP3">OP_NOP3</option>
@@ -176,15 +176,15 @@
         <option value="OP_NOP7">OP_NOP7</option>
         <option value="OP_NOP8">OP_NOP8</option>
         <option value="OP_NOP9">OP_NOP9</option> -->
-        <option value="OP_NOT">OP_NOT</option>
-        <option value="OP_NOTIF">OP_NOTIF</option>
-        <option value="OP_NUMEQUAL">OP_NUMEQUAL</option>
-        <option value="OP_NUMEQUALVERIFY">OP_NUMEQUALVERIFY</option>
-        <option value="OP_NUMNOTEQUAL">OP_NUMNOTEQUAL</option>
-        <option value="OP_OR">OP_OR</option>
-        <option value="OP_OVER">OP_OVER</option>
-        <option value="OP_PICK">OP_PICK</option>
-        <!-- <option value="OP_PUBKEY">OP_PUBKEY</option>
+				<option value="OP_NOT">OP_NOT</option>
+				<option value="OP_NOTIF">OP_NOTIF</option>
+				<option value="OP_NUMEQUAL">OP_NUMEQUAL</option>
+				<option value="OP_NUMEQUALVERIFY">OP_NUMEQUALVERIFY</option>
+				<option value="OP_NUMNOTEQUAL">OP_NUMNOTEQUAL</option>
+				<option value="OP_OR">OP_OR</option>
+				<option value="OP_OVER">OP_OVER</option>
+				<option value="OP_PICK">OP_PICK</option>
+				<!-- <option value="OP_PUBKEY">OP_PUBKEY</option>
         <option value="OP_PUBKEYHASH">OP_PUBKEYHASH</option>
         <option value="OP_PUSHDATA1">OP_PUSHDATA1</option>
         <option value="OP_PUSHDATA2">OP_PUSHDATA2</option>
@@ -192,410 +192,414 @@
         <option value="OP_RESERVED">OP_RESERVED</option>
         <option value="OP_RESERVED1">OP_RESERVED1</option>
         <option value="OP_RESERVED2">OP_RESERVED2</option> -->
-        <option value="OP_RETURN">OP_RETURN</option>
-        <option value="OP_RIGHT">OP_RIGHT</option>
-        <option value="OP_RIPEMD160">OP_RIPEMD160</option>
-        <option value="OP_ROLL">OP_ROLL</option>
-        <option value="OP_ROT">OP_ROT</option>
-        <option value="OP_RSHIFT">OP_RSHIFT</option>
-        <option value="OP_SHA1">OP_SHA1</option>
-        <option value="OP_SHA256">OP_SHA256</option>
-        <option value="OP_SIZE">OP_SIZE</option>
-        <option value="OP_SUB">OP_SUB</option>
-        <option value="OP_SUBSTR">OP_SUBSTR</option>
-        <option value="OP_SWAP">OP_SWAP</option>
-        <option value="OP_TOALTSTACK">OP_TOALTSTACK</option>
-        <option value="OP_TRUE">OP_TRUE</option>
-        <option value="OP_TUCK">OP_TUCK</option>
-        <!-- <option value="OP_VER">OP_VER</option>
+				<option value="OP_RETURN">OP_RETURN</option>
+				<option value="OP_RIGHT">OP_RIGHT</option>
+				<option value="OP_RIPEMD160">OP_RIPEMD160</option>
+				<option value="OP_ROLL">OP_ROLL</option>
+				<option value="OP_ROT">OP_ROT</option>
+				<option value="OP_RSHIFT">OP_RSHIFT</option>
+				<option value="OP_SHA1">OP_SHA1</option>
+				<option value="OP_SHA256">OP_SHA256</option>
+				<option value="OP_SIZE">OP_SIZE</option>
+				<option value="OP_SUB">OP_SUB</option>
+				<option value="OP_SUBSTR">OP_SUBSTR</option>
+				<option value="OP_SWAP">OP_SWAP</option>
+				<option value="OP_TOALTSTACK">OP_TOALTSTACK</option>
+				<option value="OP_TRUE">OP_TRUE</option>
+				<option value="OP_TUCK">OP_TUCK</option>
+				<!-- <option value="OP_VER">OP_VER</option>
         <option value="OP_VERIF">OP_VERIF</option>
         <option value="OP_VERIFY">OP_VERIFY</option>
         <option value="OP_VERNOTIF">OP_VERNOTIF</option> -->
-        <option value="OP_WITHIN">OP_WITHIN</option>
-        <option value="OP_XOR">OP_XOR</option>
-      </select>
-      <button id="addOpCode">Add OpCode</button>
-      <!-- add data -->
-      <p>Add Data</p>
-      <input type="text" id="data" />
-      <button id="addData">Add Data</button>
-      <button id="addHashData">Add Hash of Data (OP_SHA256)</button>
-      <p>Add Pub Key Hash of Recipient</p>
+				<option value="OP_WITHIN">OP_WITHIN</option>
+				<option value="OP_XOR">OP_XOR</option>
+			</select>
+			<button id="addOpCode">Add OpCode</button>
+			<!-- add data -->
+			<p>Add Data</p>
+			<input type="text" id="data" />
+			<button id="addData">Add Data</button>
+			<button id="addHashData">Add Hash of Data (OP_SHA256)</button>
+			<p>Add Pub Key Hash of Recipient</p>
 
-      <input placeholder="change receiever" type="text" id="receiver" />
-      <button id="addPubKeyHash">Add PubKeyHash</button>
-    </div>
+			<input placeholder="change receiever" type="text" id="receiver" />
+			<!-- amount -->
+			<p>Amount of Satoshis to Lock</p>
+			<input type="text" id="amount" />
+			<button id="addPubKeyHash">Add PubKeyHash</button>
+		</div>
 
-    <div class="container" id="currentLockScript">
-      <h2>Current Locking Script</h2>
-      <p>
-        The following is the current locking script. It is updated when you
-        click the "Add OpCode" button.
-      </p>
-      <!-- hex, asm, binary -->
-      <p><strong>Hex:</strong> <span id="hex"></span></p>
-      <p><strong>Asm:</strong> <span id="asm"></span></p>
-      <p><strong>Binary:</strong> <span id="binary"></span></p>
-    </div>
-    <div class="container" id="currentStack">
-      <h2>Current Stack</h2>
-      <p>
-        The following is the current stack. It is updated when you click the
-        "Add OpCode" button.
-      </p>
-      <p><strong>Stack:</strong> <span id="stack"></span></p>
-    </div>
-    <div class="container" id="broadcastLock">
-      <h2>Generate Lock Binary</h2>
-      <button id="broadcast">Broadcast</button>
-      <p id="lockResults"></p>
-    </div>
-    <div class="container" id="broadcastBinary">
-      <h2>Generated Binary</h2>
-      <p><strong>Binary:</strong> <span id="binary"></span></p>
-    </div>
-    <div class="container" id="redeemLock">
-      <h2>Redeem a Locking Script</h2>
-      <!-- enter txid to redeem -->
-      <p><strong>Enter Transaction ID to Redeem:</strong></p>
-      <input type="text" id="txidInput" />
-      <!-- add script for unlock script -->
-      <button id="redeem">Redeem</button>
-      <!-- current locking asm -->
-      <!-- current unlocking asm -->
-      <!-- current locking hex -->
-      <!-- current unlocking hex -->
-      <!-- current locking binary -->
-      <!-- current unlocking binary -->
-      <div id="currentLock"></div>
-      <div id="currentUnlock"></div>
-      <!-- combined script -->
-      <div id="combinedScript"></div>
-    </div>
-    <script>
-      const Buffer = bsv.deps.Buffer;
-      const path = "m/44'/0'/0'/0/0";
-      const generateKeys = () => {
-        const mnemonic = bsvMnemonic.fromRandom();
-        const seed = mnemonic.toSeed();
-        const root = bsv.HDPrivateKey.fromSeed(seed);
-        const child = root.deriveChild(path);
-        const privateKey = child.privateKey;
-        const publicKey = bsv.PublicKey.fromPrivateKey(privateKey);
-        const address = bsv.Address.fromPublicKey(publicKey);
+		<div class="container" id="currentLockScript">
+			<h2>Current Locking Script</h2>
+			<p>
+				The following is the current locking script. It is updated when you
+				click the "Add OpCode" button.
+			</p>
+			<!-- hex, asm, binary -->
+			<p><strong>Hex:</strong> <span id="hex"></span></p>
+			<p><strong>Asm:</strong> <span id="asm"></span></p>
+			<p><strong>Binary:</strong> <span id="binary"></span></p>
+		</div>
+		<div class="container" id="currentStack">
+			<h2>Current Stack</h2>
+			<p>
+				The following is the current stack. It is updated when you click the
+				"Add OpCode" button.
+			</p>
+			<p><strong>Stack:</strong> <span id="stack"></span></p>
+		</div>
+		<div class="container" id="broadcastLock">
+			<h2>Generate Lock Binary</h2>
+			<button id="broadcast">Broadcast</button>
+			<p id="lockResults"></p>
+		</div>
+		<div class="container" id="broadcastBinary">
+			<h2>Generated Binary</h2>
+			<p><strong>Binary:</strong> <span id="binary"></span></p>
+		</div>
+		<div class="container" id="redeemLock">
+			<h2>Redeem a Locking Script</h2>
+			<!-- enter txid to redeem -->
+			<p><strong>Enter Transaction ID to Redeem:</strong></p>
+			<input type="text" id="txidInput" />
+			<!-- add script for unlock script -->
+			<button id="redeem">Redeem</button>
+			<!-- current locking asm -->
+			<!-- current unlocking asm -->
+			<!-- current locking hex -->
+			<!-- current unlocking hex -->
+			<!-- current locking binary -->
+			<!-- current unlocking binary -->
+			<div id="currentLock"></div>
+			<div id="currentUnlock"></div>
+			<!-- combined script -->
+			<div id="combinedScript"></div>
+		</div>
+		<script>
+			const Buffer = bsv.deps.Buffer;
+			const path = "m/44'/0'/0'/0/0";
+			const generateKeys = () => {
+				const mnemonic = bsvMnemonic.fromRandom();
+				const seed = mnemonic.toSeed();
+				const root = bsv.HDPrivateKey.fromSeed(seed);
+				const child = root.deriveChild(path);
+				const privateKey = child.privateKey;
+				const publicKey = bsv.PublicKey.fromPrivateKey(privateKey);
+				const address = bsv.Address.fromPublicKey(publicKey);
 
-        return {
-          mnemonic: mnemonic.toString(),
-          privateKey: privateKey.toString(),
-          publicKey: publicKey.toString(),
-          address: address.toString(),
-        };
-      };
-      document
-        .getElementById("importMnemonic")
-        .addEventListener("click", () => {
-          const mnemonic = document.getElementById("mnemonicInput").value;
-          //   from mnemonic string
-          const mnemonic2 = bsvMnemonic.fromString(mnemonic);
-          const seed = mnemonic2.toSeed();
-          const root = bsv.HDPrivateKey.fromSeed(seed);
-          const child = root.deriveChild(path);
-          const privateKey = child.privateKey;
-          const publicKey = bsv.PublicKey.fromPrivateKey(privateKey);
-          const address = bsv.Address.fromPublicKey(publicKey);
-          const keys = {
-            mnemonic: mnemonic,
-            privateKey: privateKey.toString(),
-            publicKey: publicKey.toString(),
-            address: address.toString(),
-          };
-          localStorage.setItem("keys", JSON.stringify(keys));
-          //display keys
-          document.getElementById("mnemonic").innerHTML = keys.mnemonic;
-          document.getElementById("privateKey").innerHTML = keys.privateKey;
-          document.getElementById("publicKey").innerHTML = keys.publicKey;
-          document.getElementById("address").innerHTML = keys.address;
-        });
+				return {
+					mnemonic: mnemonic.toString(),
+					privateKey: privateKey.toString(),
+					publicKey: publicKey.toString(),
+					address: address.toString(),
+				};
+			};
+			document
+				.getElementById("importMnemonic")
+				.addEventListener("click", () => {
+					const mnemonic = document.getElementById("mnemonicInput").value;
+					//   from mnemonic string
+					const mnemonic2 = bsvMnemonic.fromString(mnemonic);
+					const seed = mnemonic2.toSeed();
+					const root = bsv.HDPrivateKey.fromSeed(seed);
+					const child = root.deriveChild(path);
+					const privateKey = child.privateKey;
+					const publicKey = bsv.PublicKey.fromPrivateKey(privateKey);
+					const address = bsv.Address.fromPublicKey(publicKey);
+					const keys = {
+						mnemonic: mnemonic,
+						privateKey: privateKey.toString(),
+						publicKey: publicKey.toString(),
+						address: address.toString(),
+					};
+					localStorage.setItem("keys", JSON.stringify(keys));
+					//display keys
+					document.getElementById("mnemonic").innerHTML = keys.mnemonic;
+					document.getElementById("privateKey").innerHTML = keys.privateKey;
+					document.getElementById("publicKey").innerHTML = keys.publicKey;
+					document.getElementById("address").innerHTML = keys.address;
+				});
 
-      const getBalance = async (address) => {
-        const response = await fetch(
-          // whatsOnChain
-          `https://api.whatsonchain.com/v1/bsv/main/address/${address}/balance`
-        );
-        const res = await response.json();
-        // uncofirmed + confirmed
-        const balance = res.confirmed + res.unconfirmed;
-        return balance;
-      };
-      //onload
-      let keys;
-      let recipientKeys;
-      document.addEventListener("DOMContentLoaded", async () => {
-        //check localStorage for keys
-        keys = JSON.parse(localStorage.getItem("keys"));
-        recipientKeys = JSON.parse(localStorage.getItem("recipientKeys"));
-        if (!keys) {
-          keys = generateKeys();
-          recipientKeys = generateKeys();
-          localStorage.setItem("keys", JSON.stringify(keys));
-          localStorage.setItem("recipientKeys", JSON.stringify(recipientKeys));
-        }
+			const getBalance = async (address) => {
+				const response = await fetch(
+					// whatsOnChain
+					`https://api.whatsonchain.com/v1/bsv/main/address/${address}/balance`
+				);
+				const res = await response.json();
+				// uncofirmed + confirmed
+				const balance = res.confirmed + res.unconfirmed;
+				return balance;
+			};
+			//onload
+			let keys;
+			let recipientKeys;
+			document.addEventListener("DOMContentLoaded", async () => {
+				//check localStorage for keys
+				keys = JSON.parse(localStorage.getItem("keys"));
+				recipientKeys = JSON.parse(localStorage.getItem("recipientKeys"));
+				if (!keys) {
+					keys = generateKeys();
+					recipientKeys = generateKeys();
+					localStorage.setItem("keys", JSON.stringify(keys));
+					localStorage.setItem("recipientKeys", JSON.stringify(recipientKeys));
+				}
 
-        //display keys
-        document.getElementById("mnemonic").innerHTML = keys.mnemonic;
-        document.getElementById("privateKey").innerHTML = keys.privateKey;
-        document.getElementById("publicKey").innerHTML = keys.publicKey;
-        document.getElementById("address").innerHTML = keys.address;
-        document.getElementById("recipient").innerHTML = recipientKeys.address;
-        document.getElementById("receiver").value = recipientKeys.address;
-        //display balance
-        const balance = await getBalance(keys.address);
-        document.getElementById("balance").innerHTML = balance;
-      });
-      const getUtxos = async (address) => {
-        const response = await fetch(
-          `https://api.bitails.io/address/${address}/unspent`
-        );
-        const res = await response.json();
-        const unspent = res.unspent;
-        const scripthash = res.scripthash;
-        console.log(unspent);
-        console.log(scripthash);
-        const utxos = unspent.map((utxo) => {
-          return {
-            txid: utxo.txid,
-            vout: utxo.vout,
-            script: bsv.Script.buildPublicKeyHashOut(address).toHex(),
-            satoshis: utxo.satoshis,
-          };
-        });
-        return utxos;
-      };
-      let currentStack = [];
+				//display keys
+				document.getElementById("mnemonic").innerHTML = keys.mnemonic;
+				document.getElementById("privateKey").innerHTML = keys.privateKey;
+				document.getElementById("publicKey").innerHTML = keys.publicKey;
+				document.getElementById("address").innerHTML = keys.address;
+				document.getElementById("recipient").innerHTML = recipientKeys.address;
+				document.getElementById("receiver").value = recipientKeys.address;
+				//display balance
+				const balance = await getBalance(keys.address);
+				document.getElementById("balance").innerHTML = balance;
+			});
+			const getUtxos = async (address) => {
+				const response = await fetch(
+					`https://api.bitails.io/address/${address}/unspent`
+				);
+				const res = await response.json();
+				const unspent = res.unspent;
+				const scripthash = res.scripthash;
+				console.log(unspent);
+				console.log(scripthash);
+				const utxos = unspent.map((utxo) => {
+					return {
+						txid: utxo.txid,
+						vout: utxo.vout,
+						script: bsv.Script.buildPublicKeyHashOut(address).toHex(),
+						satoshis: utxo.satoshis,
+					};
+				});
+				return utxos;
+			};
+			let currentStack = [];
 
-      const hexToBinary = (hex) => {
-        return parseInt(hex, 16).toString(2);
-      };
-      const addOpCode = () => {
-        const opCode = document.getElementById("opcodeSelect").value;
-        currentStack.push(opCode);
-        const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
-        const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
-        document.getElementById("hex").innerHTML = hex;
-        document.getElementById("asm").innerHTML = asm;
-        document.getElementById("binary").innerHTML = hexToBinary(hex);
-        const stackEl = document.createElement("div");
-        stackEl.innerHTML = opCode;
-        document.getElementById("stack").appendChild(stackEl);
-        stackEl.addEventListener("click", () => {
-          //remove from stack
-          const index = currentStack.indexOf(opCode);
-          if (index > -1) {
-            currentStack.splice(index, 1);
-          }
-          console.log(currentStack);
-          //remove from stack display
-          stackEl.remove();
-          //update locking script
-          const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
-          const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
-          document.getElementById("hex").innerHTML = hex;
-          document.getElementById("asm").innerHTML = asm;
-          document.getElementById("binary").innerHTML = hexToBinary(hex);
-        });
-      };
-      const addData = () => {
-        const data = document.getElementById("data").value;
-        currentStack.push(Buffer.from(data).toString("hex"));
-        console.log(currentStack);
-        const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
-        const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
-        document.getElementById("hex").innerHTML = hex;
-        document.getElementById("asm").innerHTML = asm;
-        document.getElementById("binary").innerHTML = hexToBinary(hex);
-        console.log(hex);
-        const stackEl = document.createElement("div");
-        stackEl.innerHTML = data;
-        document.getElementById("stack").appendChild(stackEl);
-        stackEl.addEventListener("click", () => {
-          //remove from stack
-          const index = currentStack.indexOf(Buffer.from(data).toString("hex"));
-          if (index > -1) {
-            currentStack.splice(index, 1);
-          }
-          console.log(currentStack);
-          //remove from stack display
-          stackEl.remove();
-          //update locking script
-          const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
-          const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
-          document.getElementById("hex").innerHTML = hex;
-          document.getElementById("asm").innerHTML = asm;
-          document.getElementById("binary").innerHTML = hexToBinary(hex);
-        });
-      };
-      const addPubKeyHash = () => {
-        const receiever = document.getElementById("receiver").value;
-        const pubKeyHash = bsv.Script.buildPublicKeyHashOut(receiever).toHex();
-        currentStack.push(pubKeyHash);
-        const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
-        const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
-        document.getElementById("hex").innerHTML = hex;
-        document.getElementById("asm").innerHTML = asm;
-        document.getElementById("binary").innerHTML = hexToBinary(hex);
-        console.log(hex);
-        const stackEl = document.createElement("div");
-        stackEl.innerHTML = pubKeyHash;
-        document.getElementById("stack").appendChild(stackEl);
-        stackEl.addEventListener("click", () => {
-          //remove from stack
-          const index = currentStack.indexOf(pubKeyHash);
-          if (index > -1) {
-            currentStack.splice(index, 1);
-          }
-          //remove from stack display
-          stackEl.remove();
-          console.log(currentStack);
+			const hexToBinary = (hex) => {
+				return parseInt(hex, 16).toString(2);
+			};
+			const addOpCode = () => {
+				const opCode = document.getElementById("opcodeSelect").value;
+				currentStack.push(opCode);
+				const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+				const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+				document.getElementById("hex").innerHTML = hex;
+				document.getElementById("asm").innerHTML = asm;
+				document.getElementById("binary").innerHTML = hexToBinary(hex);
+				const stackEl = document.createElement("div");
+				stackEl.innerHTML = opCode;
+				document.getElementById("stack").appendChild(stackEl);
+				stackEl.addEventListener("click", () => {
+					//remove from stack
+					const index = currentStack.indexOf(opCode);
+					if (index > -1) {
+						currentStack.splice(index, 1);
+					}
+					console.log(currentStack);
+					//remove from stack display
+					stackEl.remove();
+					//update locking script
+					const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+					const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+					document.getElementById("hex").innerHTML = hex;
+					document.getElementById("asm").innerHTML = asm;
+					document.getElementById("binary").innerHTML = hexToBinary(hex);
+				});
+			};
+			const addData = () => {
+				const data = document.getElementById("data").value;
+				currentStack.push(Buffer.from(data).toString("hex"));
+				console.log(currentStack);
+				const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+				const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+				document.getElementById("hex").innerHTML = hex;
+				document.getElementById("asm").innerHTML = asm;
+				document.getElementById("binary").innerHTML = hexToBinary(hex);
+				console.log(hex);
+				const stackEl = document.createElement("div");
+				stackEl.innerHTML = data;
+				document.getElementById("stack").appendChild(stackEl);
+				stackEl.addEventListener("click", () => {
+					//remove from stack
+					const index = currentStack.indexOf(Buffer.from(data).toString("hex"));
+					if (index > -1) {
+						currentStack.splice(index, 1);
+					}
+					console.log(currentStack);
+					//remove from stack display
+					stackEl.remove();
+					//update locking script
+					const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+					const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+					document.getElementById("hex").innerHTML = hex;
+					document.getElementById("asm").innerHTML = asm;
+					document.getElementById("binary").innerHTML = hexToBinary(hex);
+				});
+			};
+			const addPubKeyHash = () => {
+				const receiever = document.getElementById("receiver").value;
+				const pubKeyHash = bsv.Script.buildPublicKeyHashOut(receiever).toHex();
+				currentStack.push(pubKeyHash);
+				const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+				const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+				document.getElementById("hex").innerHTML = hex;
+				document.getElementById("asm").innerHTML = asm;
+				document.getElementById("binary").innerHTML = hexToBinary(hex);
+				console.log(hex);
+				const stackEl = document.createElement("div");
+				stackEl.innerHTML = pubKeyHash;
+				document.getElementById("stack").appendChild(stackEl);
+				stackEl.addEventListener("click", () => {
+					//remove from stack
+					const index = currentStack.indexOf(pubKeyHash);
+					if (index > -1) {
+						currentStack.splice(index, 1);
+					}
+					//remove from stack display
+					stackEl.remove();
+					console.log(currentStack);
 
-          //update locking script
-          const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
-          const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
-          document.getElementById("hex").innerHTML = hex;
-          document.getElementById("asm").innerHTML = asm;
-          document.getElementById("binary").innerHTML = hexToBinary(hex);
-        });
-      };
+					//update locking script
+					const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+					const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+					document.getElementById("hex").innerHTML = hex;
+					document.getElementById("asm").innerHTML = asm;
+					document.getElementById("binary").innerHTML = hexToBinary(hex);
+				});
+			};
 
-      const addHashData = () => {
-        const data = document.getElementById("data").value;
-        const hash = bsv.crypto.Hash.sha256(Buffer.from(data)).toString("hex");
-        console.log(hash);
-        currentStack.push(hash);
-        console.log(currentStack);
-        const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
-        const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
-        document.getElementById("hex").innerHTML = hex;
-        document.getElementById("asm").innerHTML = asm;
-        document.getElementById("binary").innerHTML = hexToBinary(hex);
-        console.log(hex);
-        const stackEl = document.createElement("div");
-        stackEl.innerHTML = hash;
-        document.getElementById("stack").appendChild(stackEl);
-        stackEl.addEventListener("click", () => {
-          //remove from stack
-          const index = currentStack.indexOf(hash);
-          if (index > -1) {
-            currentStack.splice(index, 1);
-          }
-          console.log(currentStack);
-          //remove from stack display
-          stackEl.remove();
-          //update locking script
-          const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
-          const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
-          document.getElementById("hex").innerHTML = hex;
-          document.getElementById("asm").innerHTML = asm;
-          document.getElementById("binary").innerHTML = hexToBinary(hex);
-        });
-      };
+			const addHashData = () => {
+				const data = document.getElementById("data").value;
+				const hash = bsv.crypto.Hash.sha256(Buffer.from(data)).toString("hex");
+				console.log(hash);
+				currentStack.push(hash);
+				console.log(currentStack);
+				const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+				const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+				document.getElementById("hex").innerHTML = hex;
+				document.getElementById("asm").innerHTML = asm;
+				document.getElementById("binary").innerHTML = hexToBinary(hex);
+				console.log(hex);
+				const stackEl = document.createElement("div");
+				stackEl.innerHTML = hash;
+				document.getElementById("stack").appendChild(stackEl);
+				stackEl.addEventListener("click", () => {
+					//remove from stack
+					const index = currentStack.indexOf(hash);
+					if (index > -1) {
+						currentStack.splice(index, 1);
+					}
+					console.log(currentStack);
+					//remove from stack display
+					stackEl.remove();
+					//update locking script
+					const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+					const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+					document.getElementById("hex").innerHTML = hex;
+					document.getElementById("asm").innerHTML = asm;
+					document.getElementById("binary").innerHTML = hexToBinary(hex);
+				});
+			};
 
-      document.getElementById("addOpCode").addEventListener("click", addOpCode);
-      document.getElementById("addData").addEventListener("click", addData);
-      document
-        .getElementById("addHashData")
-        .addEventListener("click", addHashData);
+			document.getElementById("addOpCode").addEventListener("click", addOpCode);
+			document.getElementById("addData").addEventListener("click", addData);
+			document
+				.getElementById("addHashData")
+				.addEventListener("click", addHashData);
 
-      document
-        .getElementById("addPubKeyHash")
-        .addEventListener("click", addPubKeyHash);
-      const buildLockingScript = async () => {
-        const utxos = await getUtxos(keys.address);
-        console.log(utxos);
-        const tx = new bsv.Transaction();
-        tx.from(utxos);
-        const lock = bsv.Script.fromASM(currentStack.join(" "));
-        tx.addOutput(
-          new bsv.Transaction.Output({
-            script: lock,
-            satoshis: 10,
-          })
-        );
-        tx.change(keys.address);
-        tx.feePerKb(15);
-        tx.sign(keys.privateKey);
-        const txHex = tx.toString();
-        //add to broadcast binary
-        document.getElementById("binary").innerHTML = txHex;
-        document.getElementById("lockResults").innerHTML = txHex;
-        // addeventlistener to copy to clipboard
-        document.getElementById("lockResults").addEventListener("click", () => {
-          navigator.clipboard.writeText(txHex);
-          alert("Copied to clipboard");
-        });
-      };
+			document
+				.getElementById("addPubKeyHash")
+				.addEventListener("click", addPubKeyHash);
+			const buildLockingScript = async () => {
+				const utxos = await getUtxos(keys.address);
+				console.log(utxos);
+				const tx = new bsv.Transaction();
+				tx.from(utxos);
+				const amount = document.getElementById("amount").value;
+				const lock = bsv.Script.fromASM(currentStack.join(" "));
+				tx.addOutput(
+					new bsv.Transaction.Output({
+						script: lock,
+						satoshis: parseInt(amount),
+					})
+				);
+				tx.change(keys.address);
+				tx.feePerKb(15);
+				tx.sign(keys.privateKey);
+				const txHex = tx.toString();
+				//add to broadcast binary
+				document.getElementById("binary").innerHTML = txHex;
+				document.getElementById("lockResults").innerHTML = txHex;
+				// addeventlistener to copy to clipboard
+				document.getElementById("lockResults").addEventListener("click", () => {
+					navigator.clipboard.writeText(txHex);
+					alert("Copied to clipboard");
+				});
+			};
 
-      document.getElementById("broadcast").addEventListener("click", () => {
-        buildLockingScript();
-      });
-      const getTxInfo = async (txid) => {
-        const response = await fetch(
-          // whatsOnChain
-          `https://api.whatsonchain.com/v1/bsv/main/tx/${txid}`
-        );
-        const res = await response.json();
-        return res;
-      };
-      const getTxHex = async (txid) => {
-        const response = await fetch(
-          // whatsOnChain
-          `https://api.whatsonchain.com/v1/bsv/main/tx/${txid}/hex`
-        );
-        const res = await response.text();
-        return res;
-      };
-      const redeemLock = async () => {
-        // use current opcode stack for users unlock script
-        const txid = document.getElementById("txidInput").value;
-        const txInfo = await getTxInfo(txid);
-        const txHex = await getTxHex(txid);
-        console.log(txInfo);
-        console.log(txHex);
-        const tx = new bsv.Transaction(txHex);
-        const lockingScript = tx.outputs[0].script;
-        const unlockingScript = bsv.Script.fromASM(currentStack.join(" "));
-        const combinedScript = bsv.Script.buildScriptHashOut(
-          bsv.crypto.Hash.sha256(unlockingScript.toBuffer())
-        );
-        console.log(combinedScript);
-        const combinedScriptHex = combinedScript.toHex();
-        console.log(combinedScriptHex);
-        const combinedScriptAsm = combinedScript.toASM();
-        console.log(combinedScriptAsm);
-        document.getElementById("currentLock").innerHTML =
-          lockingScript.toASM();
-        document.getElementById("currentUnlock").innerHTML =
-          unlockingScript.toASM();
-        document.getElementById("combinedScript").innerHTML =
-          combinedScript.toASM();
-        const tx2 = new bsv.Transaction();
-        tx2.from({
-          txId: txid,
-          outputIndex: 0,
-          script: lockingScript,
-          satoshis: txInfo.vout[0].value,
-        });
-        // set input script to unlock script
-        tx2.setInputScript(0, unlockingScript);
-        tx2.to(keys.address, 10);
-        tx2.change(recipientKeysAddress);
-        tx2.feePerKb(15);
-        tx2.sign(combinedScript);
-        const tx2Hex = tx2.toString();
-        console.log(tx2Hex);
-        document.getElementById("binary").innerHTML = tx2Hex;
-      };
-      document.getElementById("redeem").addEventListener("click", redeemLock);
-      //import mnemonic
-    </script>
-  </body>
+			document.getElementById("broadcast").addEventListener("click", () => {
+				buildLockingScript();
+			});
+			const getTxInfo = async (txid) => {
+				const response = await fetch(
+					// whatsOnChain
+					`https://api.whatsonchain.com/v1/bsv/main/tx/${txid}`
+				);
+				const res = await response.json();
+				return res;
+			};
+			const getTxHex = async (txid) => {
+				const response = await fetch(
+					// whatsOnChain
+					`https://api.whatsonchain.com/v1/bsv/main/tx/${txid}/hex`
+				);
+				const res = await response.text();
+				return res;
+			};
+			const redeemLock = async () => {
+				// use current opcode stack for users unlock script
+				const txid = document.getElementById("txidInput").value;
+				const txInfo = await getTxInfo(txid);
+				const txHex = await getTxHex(txid);
+				console.log(txInfo);
+				console.log(txHex);
+				const tx = new bsv.Transaction(txHex);
+				const lockingScript = tx.outputs[0].script;
+				const unlockingScript = bsv.Script.fromASM(currentStack.join(" "));
+				const combinedScript = bsv.Script.buildScriptHashOut(
+					bsv.crypto.Hash.sha256(unlockingScript.toBuffer())
+				);
+				console.log(combinedScript);
+				const combinedScriptHex = combinedScript.toHex();
+				console.log(combinedScriptHex);
+				const combinedScriptAsm = combinedScript.toASM();
+				console.log(combinedScriptAsm);
+				document.getElementById("currentLock").innerHTML =
+					lockingScript.toASM();
+				document.getElementById("currentUnlock").innerHTML =
+					unlockingScript.toASM();
+				document.getElementById("combinedScript").innerHTML =
+					combinedScript.toASM();
+				const tx2 = new bsv.Transaction();
+				tx2.from({
+					txId: txid,
+					outputIndex: 0,
+					script: lockingScript,
+					satoshis: txInfo.vout[0].value,
+				});
+				// set input script to unlock script
+				tx2.setInputScript(0, unlockingScript);
+				tx2.to(keys.address, 10);
+				tx2.change(recipientKeysAddress);
+				tx2.feePerKb(15);
+				tx2.sign(combinedScript);
+				const tx2Hex = tx2.toString();
+				console.log(tx2Hex);
+				document.getElementById("binary").innerHTML = tx2Hex;
+			};
+			document.getElementById("redeem").addEventListener("click", redeemLock);
+			//import mnemonic
+		</script>
+	</body>
 </html>
