@@ -12,66 +12,78 @@
 			* {
 				box-sizing: border-box;
 			}
+
 			body {
-				font-family: sans-serif;
+				font-family: "Arial", sans-serif;
+				background-color: #f4f4f4;
+				color: #333;
+				line-height: 1.6;
 				word-wrap: break-word;
 			}
+
 			.container {
-				padding: 10px;
-				border: 1px solid #ccc;
-				width: 100%;
+				background-color: #fff;
+				padding: 20px;
+				border: 1px solid #ddd;
+				margin: 20px auto;
+				box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 				max-width: 900px;
-				margin: 0 auto;
 			}
 
-			#stack {
-				display: flex;
-				flex-wrap: wrap;
+			h1,
+			h2 {
+				color: #333;
 			}
-			#stack div {
-				padding: 5px;
-				margin: 5px;
-				border: 1px solid #ccc;
+
+			button,
+			input,
+			select {
+				font-family: inherit;
+				font-size: 16px;
+				padding: 10px;
+				margin: 5px 0;
+				border: 1px solid #ddd;
+				border-radius: 5px;
+			}
+
+			button {
+				background-color: #5c9ccf;
+				color: white;
+				border: none;
+			}
+
+			button:hover {
+				background-color: #4a8cbd;
 				cursor: pointer;
-				width: 100%;
-				max-width: 100px;
-				text-align: center;
 			}
-			#stack div:hover {
-				background-color: #ccc;
-			}
+
+			#stack div,
 			#lockResults {
 				cursor: pointer;
-			}
-			#lockResults:hover {
-				background-color: #ccc;
-			}
-			#opcodeSelect {
-				width: 100%;
-				max-width: 100px;
+				transition: background-color 0.3s ease;
 			}
 
-			#currentLockScript p {
-				width: 100%;
-			}
-
-			#currentLock p {
-				width: 100%;
-			}
-			#currentLock p span {
-				cursor: pointer;
-			}
-			button {
-				cursor: pointer;
-			}
+			#stack div:hover,
+			#lockResults:hover,
 			button:hover {
-				background-color: #ccc;
+				background-color: #eee;
 			}
-			select {
-				cursor: pointer;
-			}
-			option:hover {
-				background-color: #ccc;
+
+			@media (max-width: 600px) {
+				.container {
+					width: 90%;
+					padding: 10px;
+				}
+
+				#stack div,
+				#opcodeSelect,
+				#data,
+				#file,
+				#amount,
+				#receiver {
+					width: 100%;
+					max-width: none;
+				}
 			}
 		</style>
 	</head>
@@ -118,7 +130,7 @@
 			<p><strong>Address:</strong> <span id="recipient"></span></p>
 		</div>
 		<div class="container" id="examples">
-			<h2>Examples</h2>
+			<h2>Add Stack Item</h2>
 			<select name="" id="opcodeSelect">
 				<option value="">Choose OpCode</option>
 				<option value="OP_0">OP_0</option>
@@ -239,14 +251,16 @@
 			<!-- add data -->
 			<p>Add Data</p>
 			<input type="text" id="data" />
+			<!-- file -->
+			<p>Upload File</p>
+			<input type="file" id="file" />
 			<button id="addData">Add Data</button>
 			<button id="addHashData">Add Hash of Data (OP_SHA256)</button>
 			<p>Add Pub Key Hash of Recipient</p>
-
 			<input placeholder="change receiever" type="text" id="receiver" />
 			<!-- amount -->
 			<p>Amount of Satoshis to Lock</p>
-			<input type="text" id="amount" />
+			<input value="1" type="text" id="amount" />
 			<button id="addPubKeyHash">Add PubKeyHash</button>
 			<button id="broadcast">Generate Broadcast Script</button>
 		</div>
@@ -405,8 +419,27 @@
 					document.getElementById("binary").innerHTML = hexToBinary(hex);
 				});
 			};
-			const addData = () => {
-				const data = document.getElementById("data").value;
+			const extractFile = async (file) => {
+				const reader = new FileReader();
+				reader.readAsText(file);
+				reader.onload = () => {
+					const text = reader.result;
+					console.log(text);
+					return text;
+				};
+				reader.onerror = () => {
+					console.log(reader.error);
+				};
+			};
+			const addData = async () => {
+				let data = "";
+				const textData = document.getElementById("data").value;
+				const fileData = document.getElementById("file").files[0];
+				if (textData) {
+					data = textData;
+				} else if (fileData) {
+					data = await extractFile(fileData);
+				}
 				const dataHex = Buffer.from(data).toString("hex");
 				const length = dataHex.length / 2;
 				//check if current stack is empty or last item is not a push data op code
