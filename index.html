@@ -429,6 +429,7 @@
 						const arrayBuffer = reader.result;
 						const bytes = new Uint8Array(arrayBuffer);
 						const hex = Buffer.from(bytes).toString("hex");
+						console.log(hex.length); //length in bytes
 						resolve(hex);
 					};
 				});
