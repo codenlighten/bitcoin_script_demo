@@ -458,6 +458,9 @@
 						// 4GB
 					} else if (length > 256 && length < 4294967296) {
 						opCode = "OP_PUSHDATA4";
+					} else {
+						alert("File too large");
+						return;
 					}
 
 					//confirm op code
