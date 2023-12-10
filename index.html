@@ -493,9 +493,6 @@
 							document.getElementById("hex").innerHTML = hex;
 							document.getElementById("asm").innerHTML = asm;
 							document.getElementById("binary").innerHTML = hexToBinary(hex);
-							// clear data input
-							document.getElementById("data").value = "";
-							document.getElementById("file").value = "";
 						});
 					}
 				}
@@ -507,6 +504,9 @@
 				document.getElementById("asm").innerHTML = asm;
 				document.getElementById("binary").innerHTML = hexToBinary(hex);
 				console.log(hex);
+				// clear data input
+				document.getElementById("data").value = "";
+				document.getElementById("file").value = "";
 				const stackEl = document.createElement("div");
 				stackEl.innerHTML = dataHex;
 				document.getElementById("stack").appendChild(stackEl);
