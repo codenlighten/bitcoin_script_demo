@@ -9,46 +9,42 @@
 		<script src="https://cdn.jsdelivr.net/npm/bsv@1.5.0/bsv-ecies.min.js"></script>
 		<title>Bitcoin SV Locking Script Examples</title>
 		<style>
+			* {
+				box-sizing: border-box;
+			}
+
 			body {
-				font-family: sans-serif;
+				font-family: Arial, Helvetica, sans-serif;
 			}
 			.container {
-				margin: 20px;
-				padding: 20px;
-				border: 1px solid #ccc;
-				word-wrap: break-word;
+				max-width: 800px;
+				margin: 0 auto;
+				padding: 10px;
 			}
-			#header {
-				margin-top: 0;
+			.container h1 {
+				text-align: center;
 			}
-			#examples {
-				display: flex;
-				flex-direction: column;
+			.container h2 {
+				text-align: center;
 			}
-			#examples button {
-				margin: 10px 0;
+			.container p {
+				text-align: center;
 			}
-			#examples input {
-				margin: 10px 0;
+			.container input {
+				width: 100%;
+				max-width: 400px;
+				margin: 0 auto;
+				display: block;
+				padding: 5px;
+				font-size: 16px;
 			}
-			#examples select {
-				margin: 10px 0;
+			.container button {
+				display: block;
+				margin: 0 auto;
+				padding: 5px;
+				font-size: 16px;
 			}
-			#examples p {
-				margin: 10px 0;
-			}
-			#examples #currentLockScript {
-				margin-top: 20px;
-			}
-			#examples #broadcastLock {
-				margin-top: 20px;
-			}
-			#examples #broadcastBinary {
-				margin-top: 20px;
-			}
-			#examples #broadcastResults {
-				margin-top: 20px;
-			}
+
 			#stack {
 				display: flex;
 				flex-wrap: wrap;
@@ -61,6 +57,19 @@
 				width: 100%;
 				max-width: 100px;
 				text-align: center;
+			}
+			#stack div:hover {
+				background-color: #ccc;
+			}
+			#lockResults {
+				cursor: pointer;
+			}
+
+			/* max  */
+			@media only screen and (max-width: 600px) {
+				.container {
+					max-width: 100%;
+				}
 			}
 		</style>
 	</head>
@@ -412,25 +421,25 @@
 						opCode = "OP_PUSHDATA4";
 					}
 					currentStack.push(opCode);
-          const opEl = document.createElement("div");
-          opEl.innerHTML = opCode;
-          document.getElementById("stack").appendChild(opEl);
-          opEl.addEventListener("click", () => {
-            //remove from stack
-            const index = currentStack.indexOf(opCode);
-            if (index > -1) {
-              currentStack.splice(index, 1);
-            }
-            console.log(currentStack);
-            //remove from stack display
-            opEl.remove();
-            //update locking script
-            const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
-            const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
-            document.getElementById("hex").innerHTML = hex;
-            document.getElementById("asm").innerHTML = asm;
-            document.getElementById("binary").innerHTML = hexToBinary(hex);
-          });
+					const opEl = document.createElement("div");
+					opEl.innerHTML = opCode;
+					document.getElementById("stack").appendChild(opEl);
+					opEl.addEventListener("click", () => {
+						//remove from stack
+						const index = currentStack.indexOf(opCode);
+						if (index > -1) {
+							currentStack.splice(index, 1);
+						}
+						console.log(currentStack);
+						//remove from stack display
+						opEl.remove();
+						//update locking script
+						const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+						const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+						document.getElementById("hex").innerHTML = hex;
+						document.getElementById("asm").innerHTML = asm;
+						document.getElementById("binary").innerHTML = hexToBinary(hex);
+					});
 				}
 				currentStack.push(dataHex);
 				console.log(currentStack);
