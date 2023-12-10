@@ -498,7 +498,7 @@
 							let percent = 0.5;
 							//choose percent based on ratio of 100kb to current file size
 							const currentSize = data.length / 2 / 1024;
-							percent = 100 / currentSize;
+							percent = 100 / currentSize / 2;
 							const blob = await compress(fileData, percent);
 							data = await extractFile(blob);
 						}
