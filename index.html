@@ -143,7 +143,10 @@
 			<p><strong>Balance:</strong> <span id="balance"></span></p>
 			<!-- single satoshi utxos -->
 			<p>
-				<strong>UTXOs:</strong>
+				<strong
+					>Single Satoshi UTXOs:
+					<span id="utxos"></span>
+				</strong>
 			</p>
 		</div>
 		<div class="container" id="importMnemonic">
@@ -361,6 +364,9 @@
 					document.getElementById("privateKey").innerHTML = keys.privateKey;
 					document.getElementById("publicKey").innerHTML = keys.publicKey;
 					document.getElementById("address").innerHTML = keys.address;
+					getBalance(keys.address).then((balance) => {
+						document.getElementById("balance").innerHTML = balance.balance;
+					});
 				});
 
 			const getBalance = async (address) => {
@@ -369,15 +375,13 @@
 				);
 				const res = await utxos.json();
 				const outputs = res.unspent;
+				console.log(outputs);
 				const balance = outputs.reduce((acc, output) => {
 					return acc + output.satoshis;
 				}, 0);
 				const singleSatoshi = outputs.filter((output) => output.satoshis === 1);
 				console.log(singleSatoshi);
-				document.getElementById("utxos").innerHTML =
-					`<p><strong>UTXOs:</strong> ${outputs.length}</p>` +
-					`<p><strong>Single Satoshi UTXOs:</strong> ${singleSatoshi.length}</p>`;
-				return balance;
+				return { balance, singleSatoshi };
 			};
 			//onload
 			let keys;
@@ -401,8 +405,15 @@
 				document.getElementById("recipient").innerHTML = recipientKeys.address;
 				document.getElementById("receiver").value = recipientKeys.address;
 				//display balance
-				const balance = await getBalance(keys.address);
+				const { balance, singleSatoshi } = await getBalance(keys.address);
+				console.log(singleSatoshi);
 				document.getElementById("balance").innerHTML = balance;
+				//display single satoshi utxos
+				singleSatoshi.forEach((utxo) => {
+					const utxoEl = document.createElement("div");
+					utxoEl.innerHTML = `${utxo.txid}:${utxo.vout}`;
+					document.getElementById("utxos").appendChild(utxoEl);
+				});
 			});
 			const getUtxos = async (address) => {
 				const response = await fetch(
