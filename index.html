@@ -426,7 +426,8 @@
 			};
 			const addPubKeyHash = () => {
 				const receiever = document.getElementById("receiver").value;
-				const pubKeyHash = bsv.Address.fromString(receiever).toHex();
+				const address = bsv.Address.fromString(receiever);
+				const pubKeyHash = address.hashBuffer.toString("hex");
 				currentStack.push(pubKeyHash);
 				const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
 				const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
