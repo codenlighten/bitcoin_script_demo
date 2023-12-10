@@ -119,14 +119,15 @@
 			/>
 			<p>
 				<!-- describe how it uses forth like stack -->
-				This tool allows you to build a script using a stack. The locking script
-				is used to lock funds to an address. The locking script is also known as
-				a scriptPubKey. The stack structure and OP CODES are modeled after the
-				Forth programming language. The stack is a LIFO (last in first out) data
-				structure. The Locking Script and Unlocking Script are combined to
-				create a combined script. The combined script is evaluated to determine
-				if the funds can be spent. If the combined script evaluates to true, the
-				funds can be spent.
+				This tool allows you to build a bitcoin non-standard script using a
+				stack. The locking script is used to lock funds to an address or other
+				conditions. The locking script is also known as a scriptPubKey. The
+				stack structure and OP CODES are modeled after the Forth programming
+				language. The stack is a LIFO (last in first out) data structure. The
+				Locking Script and Unlocking Script are combined to create a combined
+				script. The combined script is evaluated to determine if the funds can
+				be spent. If the combined script evaluates to true, the funds can be
+				unlocked and spent.
 			</p>
 		</div>
 		<div class="container" id="myKeys">
@@ -139,8 +140,11 @@
 			<p><strong>Private Key:</strong> <span id="privateKey"></span></p>
 			<p><strong>Public Key:</strong> <span id="publicKey"></span></p>
 			<p><strong>Address:</strong> <span id="address"></span></p>
-			<!-- balance -->
 			<p><strong>Balance:</strong> <span id="balance"></span></p>
+			<!-- single satoshi utxos -->
+			<p>
+				<strong>UTXOs:</strong>
+			</p>
 		</div>
 		<div class="container" id="importMnemonic">
 			<h2>Import Mnemonic Phrase</h2>
@@ -360,13 +364,19 @@
 				});
 
 			const getBalance = async (address) => {
-				const response = await fetch(
-					// whatsOnChain
-					`https://api.whatsonchain.com/v1/bsv/main/address/${address}/balance`
+				const utxos = await fetch(
+					`https://api.bitails.io/address/${address}/unspent`
 				);
-				const res = await response.json();
-				// uncofirmed + confirmed
-				const balance = res.confirmed + res.unconfirmed;
+				const res = await utxos.json();
+				const outputs = res.unspent;
+				const balance = outputs.reduce((acc, output) => {
+					return acc + output.satoshis;
+				}, 0);
+				const singleSatoshi = outputs.filter((output) => output.satoshis === 1);
+				console.log(singleSatoshi);
+				document.getElementById("utxos").innerHTML =
+					`<p><strong>UTXOs:</strong> ${outputs.length}</p>` +
+					`<p><strong>Single Satoshi UTXOs:</strong> ${singleSatoshi.length}</p>`;
 				return balance;
 			};
 			//onload
