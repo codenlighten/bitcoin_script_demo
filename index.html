@@ -49,6 +49,13 @@
 			#examples #broadcastResults {
 				margin-top: 20px;
 			}
+			#stack div {
+				display: inline-block;
+				padding: 5px;
+				margin: 5px;
+				border: 1px solid #ccc;
+				cursor: pointer;
+			}
 		</style>
 	</head>
 	<body>
@@ -131,7 +138,6 @@
 				<option value="OP_BOOLAND">OP_BOOLAND</option>
 				<option value="OP_BOOLOR">OP_BOOLOR</option>
 				<option value="OP_CAT">OP_CAT</option>
-				<!-- <option value="OP_CHECKLOCKTIMEVERIFY">OP_CHECKLOCKTIMEVERIFY</option> -->
 				<option value="OP_CHECKMULTISIG">OP_CHECKMULTISIG</option>
 				<option value="OP_CHECKMULTISIGVERIFY">OP_CHECKMULTISIGVERIFY</option>
 				<option value="OP_CHECKSIG">OP_CHECKSIG</option>
@@ -153,7 +159,7 @@
 				<option value="OP_HASH256">OP_HASH256</option>
 				<option value="OP_IF">OP_IF</option>
 				<option value="OP_IFDUP">OP_IFDUP</option>
-				<!-- <option value="OP_INVALIDOPCODE">OP_INVALIDOPCODE</option> -->
+				<option value="OP_INVALIDOPCODE">OP_INVALIDOPCODE</option>
 				<option value="OP_INVERT">OP_INVERT</option>
 				<option value="OP_LEFT">OP_LEFT</option>
 				<option value="OP_LESSTHAN">OP_LESSTHAN</option>
@@ -166,16 +172,16 @@
 				<option value="OP_NEGATE">OP_NEGATE</option>
 				<option value="OP_NIP">OP_NIP</option>
 				<option value="OP_NOP">OP_NOP</option>
-				<!-- <option value="OP_NOP1">OP_NOP1</option>
-        <option value="OP_NOP10">OP_NOP10</option>
-        <option value="OP_NOP2">OP_NOP2</option>
-        <option value="OP_NOP3">OP_NOP3</option>
-        <option value="OP_NOP4">OP_NOP4</option>
-        <option value="OP_NOP5">OP_NOP5</option>
-        <option value="OP_NOP6">OP_NOP6</option>
-        <option value="OP_NOP7">OP_NOP7</option>
-        <option value="OP_NOP8">OP_NOP8</option>
-        <option value="OP_NOP9">OP_NOP9</option> -->
+				<option value="OP_NOP1">OP_NOP1</option>
+				<option value="OP_NOP10">OP_NOP10</option>
+				<option value="OP_NOP2">OP_NOP2</option>
+				<option value="OP_NOP3">OP_NOP3</option>
+				<option value="OP_NOP4">OP_NOP4</option>
+				<option value="OP_NOP5">OP_NOP5</option>
+				<option value="OP_NOP6">OP_NOP6</option>
+				<option value="OP_NOP7">OP_NOP7</option>
+				<option value="OP_NOP8">OP_NOP8</option>
+				<option value="OP_NOP9">OP_NOP9</option>
 				<option value="OP_NOT">OP_NOT</option>
 				<option value="OP_NOTIF">OP_NOTIF</option>
 				<option value="OP_NUMEQUAL">OP_NUMEQUAL</option>
@@ -184,12 +190,10 @@
 				<option value="OP_OR">OP_OR</option>
 				<option value="OP_OVER">OP_OVER</option>
 				<option value="OP_PICK">OP_PICK</option>
-				<!-- <option value="OP_PUBKEY">OP_PUBKEY</option>
-        <option value="OP_PUBKEYHASH">OP_PUBKEYHASH</option>
-        <option value="OP_PUSHDATA1">OP_PUSHDATA1</option>
-        <option value="OP_PUSHDATA2">OP_PUSHDATA2</option>
-        <option value="OP_PUSHDATA4">OP_PUSHDATA4</option>
-        <option value="OP_RESERVED">OP_RESERVED</option>
+				<option value="OP_PUSHDATA1">OP_PUSHDATA1</option>
+				<option value="OP_PUSHDATA2">OP_PUSHDATA2</option>
+				<option value="OP_PUSHDATA4">OP_PUSHDATA4</option>
+				<!-- <option value="OP_RESERVED">OP_RESERVED</option>
         <option value="OP_RESERVED1">OP_RESERVED1</option>
         <option value="OP_RESERVED2">OP_RESERVED2</option> -->
 				<option value="OP_RETURN">OP_RETURN</option>
@@ -227,52 +231,29 @@
 			<p>Amount of Satoshis to Lock</p>
 			<input type="text" id="amount" />
 			<button id="addPubKeyHash">Add PubKeyHash</button>
+			<button id="broadcast">Generate Broadcast Script</button>
 		</div>
-
+		<div class="container" id="currentStack">
+			<h2>Current Stack</h2>
+			<p><strong>Stack:</strong> <span id="stack"></span></p>
+		</div>
 		<div class="container" id="currentLockScript">
 			<h2>Current Locking Script</h2>
-			<p>
-				The following is the current locking script. It is updated when you
-				click the "Add OpCode" button.
-			</p>
-			<!-- hex, asm, binary -->
 			<p><strong>Hex:</strong> <span id="hex"></span></p>
 			<p><strong>Asm:</strong> <span id="asm"></span></p>
 			<p><strong>Binary:</strong> <span id="binary"></span></p>
 		</div>
-		<div class="container" id="currentStack">
-			<h2>Current Stack</h2>
-			<p>
-				The following is the current stack. It is updated when you click the
-				"Add OpCode" button.
-			</p>
-			<p><strong>Stack:</strong> <span id="stack"></span></p>
-		</div>
-		<div class="container" id="broadcastLock">
-			<h2>Generate Lock Binary</h2>
-			<button id="broadcast">Generate Script</button>
-			<p id="lockResults"></p>
-		</div>
-		<div class="container" id="broadcastBinary">
-			<h2>Generated Binary</h2>
-			<p><strong>Binary:</strong> <span id="binary"></span></p>
+		<div class="container" id="finalScript">
+			<h2>Final Script</h2>
+			<p id="lockResults" title="click to copy"></p>
 		</div>
 		<div class="container" id="redeemLock">
 			<h2>Redeem a Locking Script</h2>
-			<!-- enter txid to redeem -->
 			<p><strong>Enter Transaction ID to Redeem:</strong></p>
 			<input type="text" id="txidInput" />
-			<!-- add script for unlock script -->
 			<button id="redeem">Redeem</button>
-			<!-- current locking asm -->
-			<!-- current unlocking asm -->
-			<!-- current locking hex -->
-			<!-- current unlocking hex -->
-			<!-- current locking binary -->
-			<!-- current unlocking binary -->
 			<div id="currentLock"></div>
 			<div id="currentUnlock"></div>
-			<!-- combined script -->
 			<div id="combinedScript"></div>
 		</div>
 		<script>
@@ -531,11 +512,12 @@
 				//add to broadcast binary
 				document.getElementById("binary").innerHTML = txHex;
 				document.getElementById("lockResults").innerHTML = txHex;
-				// addeventlistener to copy to clipboard
 				document.getElementById("lockResults").addEventListener("click", () => {
 					navigator.clipboard.writeText(txHex);
 					alert("Copied to clipboard");
 				});
+				//scroll to results
+				document.getElementById("lockResults").scrollIntoView();
 			};
 
 			document.getElementById("broadcast").addEventListener("click", () => {
