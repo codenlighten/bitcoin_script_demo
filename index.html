@@ -437,6 +437,14 @@
 				let data = "";
 				const textData = document.getElementById("data").value;
 				const fileData = document.getElementById("file").files[0];
+				if (!textData && !fileData) {
+					alert("Please enter data or upload a file");
+					return;
+				}
+				if (textData && fileData) {
+					alert("Please enter data or upload a file, not both");
+					return;
+				}
 				if (textData) {
 					data = textData;
 				} else if (fileData) {
@@ -485,6 +493,9 @@
 							document.getElementById("hex").innerHTML = hex;
 							document.getElementById("asm").innerHTML = asm;
 							document.getElementById("binary").innerHTML = hexToBinary(hex);
+							// clear data input
+							document.getElementById("data").value = "";
+							document.getElementById("file").value = "";
 						});
 					}
 				}
