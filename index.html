@@ -456,19 +456,22 @@
 					reader.onload = () => {
 						const arrayBuffer = reader.result;
 						const bytes = new Uint8Array(arrayBuffer);
+						console.log(bytes.length);
 						const hex = Buffer.from(bytes).toString("hex");
 						//length in kilobytes
 						const length = hex.length / 2 / 1024;
 						console.log(length, "kb");
-						resolve(hex);
+						resolve({ bytes, hex });
 					};
 				});
 			};
 			let imageCheck = false;
 			const addData = async () => {
 				let data = "";
+				let bytes = [];
 				const textData = document.getElementById("data").value;
 				const fileData = document.getElementById("file").files[0];
+
 				if (!textData && !fileData) {
 					alert("Please enter data or upload a file");
 					return;
@@ -485,7 +488,9 @@
 					if (type.includes("image")) {
 						imageCheck = true;
 					}
-					data = await extractFile(fileData);
+					const { bytes, hex } = await extractFile(fileData);
+					// data = hex;
+					data = bytes;
 					//compress file if user would like
 					//if image and file size is greater than 100kb
 					if (imageCheck && data.length / 2 / 1024 > 100) {
@@ -500,11 +505,13 @@
 							const currentSize = data.length / 2 / 1024;
 							percent = 100 / currentSize / 2;
 							const blob = await compress(fileData, percent);
-							data = await extractFile(blob);
+							const { bytes, hex } = await extractFile(blob);
+							data = bytes;
 						}
 					}
 				}
 				const dataHex = Buffer.from(data).toString("hex");
+				console.log(dataHex.length);
 				const length = dataHex.length / 2;
 				//check if current stack is empty or last item is not a push data op code
 				if (
@@ -550,7 +557,8 @@
 						});
 					}
 				}
-				currentStack.push(dataHex);
+				// currentStack.push(dataHex);
+				currentStack.push(Buffer.from(data).toString("hex"));
 				console.log(currentStack);
 				const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
 				const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
