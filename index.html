@@ -3,6 +3,22 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- twitter -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="@codenlighten1" />
+		<meta name="twitter:creator" content="@codenlighten1" />
+		<meta name="twitter:title" content="Bitcoin Script Builder" />
+		<meta
+			name="twitter:description"
+			content="This tool allows you to build a script using a stack. The locking script is used to lock funds to an address. The locking script is also known as a scriptPubKey. The stack structure and OP CODES are modeled after the Forth programming language. The stack is a LIFO (last in first out) data structure. The Locking Script and Unlocking Script are combined to create a combined script. The combined script is evaluated to determine if the funds can be spent. If the combined script evaluates to true, the funds can be spent."
+		/>
+		<!-- https://plugins.whatsonchain.com/api/plugin/main/ab96e7be2830655dcffa6c8ca2b64c6a9da7c919c19f9bb6c433da75dc235a85/0 -->
+		<meta
+			name="twitter:image"
+			content="https://plugins.whatsonchain.com/api/plugin/main/ab96e7be2830655dcffa6c8ca2b64c6a9da7c919c19f9bb6c433da75dc235a85/0"
+		/>
+		<!-- favicon  -->
+		<link rel="icon" href="favicon.ico" />
 		<script src="https://unpkg.com/bsv@1.5"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bsv@1.5.0/bsv-message.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bsv@1.5.0/bsv-mnemonic.min.js"></script>
@@ -69,6 +85,12 @@
 				background-color: #eee;
 				color: #333;
 			}
+			#logo {
+				width: 100%;
+				max-width: 300px;
+				display: block;
+				margin: 0 auto;
+			}
 
 			@media (max-width: 600px) {
 				.container {
@@ -90,7 +112,11 @@
 	</head>
 	<body>
 		<div class="container" id="header">
-			<h1>Bitcoin Script Builder</h1>
+			<img
+				src="https://plugins.whatsonchain.com/api/plugin/main/ab96e7be2830655dcffa6c8ca2b64c6a9da7c919c19f9bb6c433da75dc235a85/0"
+				alt=""
+				id="logo"
+			/>
 			<p>
 				<!-- describe how it uses forth like stack -->
 				This tool allows you to build a script using a stack. The locking script
