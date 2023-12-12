@@ -400,9 +400,9 @@
         const { balance } = await getBalance(keys.address);
         document.getElementById("balance").innerHTML = balance;
       });
-      const getUtxos = async (address) => {
+      const getUtxos = async (addy) => {
         const response = await fetch(
-          `https://api.bitails.io/address/${address}/unspent`
+          `https://api.bitails.io/address/${addy}/unspent`
         );
         const res = await response.json();
         const unspent = res.unspent;
@@ -413,7 +413,7 @@
           return {
             txid: utxo.txid,
             vout: utxo.vout,
-            script: bsv.Script.buildPublicKeyHashOut(address).toHex(),
+            script: bsv.Script.buildPublicKeyHashOut(addy).toHex(),
             satoshis: utxo.satoshis,
           };
         });
