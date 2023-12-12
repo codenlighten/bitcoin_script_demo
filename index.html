@@ -388,7 +388,10 @@
           localStorage.setItem("keys", JSON.stringify(keys));
           localStorage.setItem("recipientKeys", JSON.stringify(recipientKeys));
         }
-
+        if (!recipientKeys) {
+          recipientKeys = generateKeys();
+          localStorage.setItem("recipientKeys", JSON.stringify(recipientKeys));
+        }
         //display keys
         document.getElementById("mnemonic").innerHTML = keys.mnemonic;
         document.getElementById("privateKey").innerHTML = keys.privateKey;
@@ -697,7 +700,11 @@
         .getElementById("addPubKeyHash")
         .addEventListener("click", addPubKeyHash);
       const buildLockingScript = async () => {
-        let utxos = await getUtxos(keys.address);
+        const address = document.getElementById("address").innerHTML;
+        const addy = bsv.Address.fromString(address);
+
+        let utxos = await getUtxos(addy);
+        console.log(address);
         // utxos = utxos.filter((utxo) => utxo.satoshis > 1);
         console.log(utxos);
         const tx = new bsv.Transaction();
@@ -710,7 +717,7 @@
             satoshis: parseInt(amount),
           })
         );
-        tx.change(keys.address);
+        tx.change(addy);
         tx.feePerKb(15);
         tx.sign(keys.privateKey);
         const txHex = tx.toString();
