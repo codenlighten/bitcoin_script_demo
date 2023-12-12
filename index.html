@@ -754,43 +754,54 @@
       const redeemLock = async () => {
         // use current opcode stack for users unlock script
         const txid = document.getElementById("txidInput").value;
-        const txInfo = await getTxInfo(txid);
+        // const txInfo = await getTxInfo(txid);
         const txHex = await getTxHex(txid);
-        console.log(txInfo);
+        // console.log(txInfo);
         console.log(txHex);
         const tx = new bsv.Transaction(txHex);
+        console.log(tx);
         const lockingScript = tx.outputs[0].script;
-        const unlockingScript = bsv.Script.fromASM(currentStack.join(" "));
-        const combinedScript = bsv.Script.buildScriptHashOut(
-          bsv.crypto.Hash.sha256(unlockingScript.toBuffer())
-        );
-        console.log(combinedScript);
-        const combinedScriptHex = combinedScript.toHex();
-        console.log(combinedScriptHex);
-        const combinedScriptAsm = combinedScript.toASM();
-        console.log(combinedScriptAsm);
+        console.log(lockingScript);
+        const asm = lockingScript.toASM();
+
+        //display current locking script
         document.getElementById("currentLock").innerHTML =
           lockingScript.toASM();
-        document.getElementById("currentUnlock").innerHTML =
-          unlockingScript.toASM();
-        document.getElementById("combinedScript").innerHTML =
-          combinedScript.toASM();
-        const tx2 = new bsv.Transaction();
-        tx2.from({
-          txId: txid,
-          outputIndex: 0,
-          script: lockingScript,
-          satoshis: txInfo.vout[0].value,
+        //   add to bottom of stack
+        currentStack.push(asm);
+        //display current stack
+        document.getElementById("stack").innerHTML = "";
+        currentStack.forEach((item) => {
+          const stackEl = document.createElement("div");
+          stackEl.innerHTML = item;
+          document.getElementById("stack").appendChild(stackEl);
+          stackEl.addEventListener("click", () => {
+            //remove from stack
+            const index = currentStack.indexOf(item);
+            if (index > -1) {
+              currentStack.splice(index, 1);
+            }
+            console.log(currentStack);
+            //remove from stack display
+            stackEl.remove();
+            //update locking script
+            const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+            const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+            document.getElementById("hex").innerHTML = hex;
+            document.getElementById("asm").innerHTML = asm;
+            document.getElementById("binary").innerHTML = hexToBinary(hex);
+          });
         });
-        // set input script to unlock script
-        tx2.setInputScript(0, unlockingScript);
-        tx2.to(keys.address, 10);
-        tx2.change(recipientKeysAddress);
-        tx2.feePerKb(15);
-        tx2.sign(combinedScript);
-        const tx2Hex = tx2.toString();
-        console.log(tx2Hex);
-        document.getElementById("binary").innerHTML = tx2Hex;
+        //display current unlocking script
+        document.getElementById("currentUnlock").innerHTML =
+          currentStack.join(" ");
+        //combine scripts
+        const combinedScript = bsv.Script.fromASM(
+          currentStack.join(" ")
+        ).toHex();
+        document.getElementById("combinedScript").innerHTML = combinedScript;
+        //scroll to results
+        document.getElementById("combinedScript").scrollIntoView();
       };
       document.getElementById("redeem").addEventListener("click", redeemLock);
       //import mnemonic
