@@ -698,7 +698,7 @@
         .addEventListener("click", addPubKeyHash);
       const buildLockingScript = async () => {
         let utxos = await getUtxos(keys.address);
-        utxos = utxos.filter((utxo) => utxo.satoshis > 1);
+        // utxos = utxos.filter((utxo) => utxo.satoshis > 1);
         console.log(utxos);
         const tx = new bsv.Transaction();
         tx.from(utxos);
