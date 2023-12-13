@@ -972,6 +972,17 @@
         document.getElementById("addData").innerHTML = "Add File Data";
         document.getElementById("addData").style.backgroundColor = "red";
       });
+      //clear all inputs
+      currentStack = [];
+      document.getElementById("stack").innerHTML = "";
+      document.getElementById("hex").innerHTML = "";
+      document.getElementById("asm").innerHTML = "";
+      document.getElementById("binary").innerHTML = "";
+      document.getElementById("lockResults").innerHTML = "";
+      document.getElementById("genBroadcast").style.display = "none";
+      document.getElementById("data").value = "";
+      document.getElementById("file").value = "";
+      document.getElementById("amount").value = "1";
     </script>
   </body>
 </html>
