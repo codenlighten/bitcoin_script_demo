@@ -275,6 +275,7 @@
         <option value="OP_XOR">OP_XOR</option>
       </select>
       <button id="addOpCode">Add OpCode</button>
+      <button id="p2pkh">P2PKH</button>
       <!-- add data -->
       <p>Add Data</p>
       <input type="text" id="data" />
@@ -500,7 +501,9 @@
           };
         });
       };
+
       let imageCheck = false;
+      let textCheck = false;
       const addData = async () => {
         let data = "";
         let bytes = [];
@@ -517,6 +520,7 @@
         }
         if (textData) {
           data = textData;
+          textCheck = true;
         } else if (fileData) {
           //check if file is image
           const type = fileData.type;
@@ -593,7 +597,11 @@
           }
         }
         // currentStack.push(dataHex);
-        currentStack.push(Buffer.from(data).toString("hex"));
+        if (textCheck) {
+          currentStack.push(Buffer.from(data).toString("hex"));
+        } else {
+          currentStack.push(dataHex);
+        }
         console.log(currentStack);
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
         const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
@@ -690,6 +698,47 @@
         });
       };
 
+      //add p2pkh
+      document.getElementById("p2pkh").addEventListener("click", () => {
+        //OP_DUP OP_HASH160 <Public Key Hash> OP_EQUALVERIFY OP_CHECKSIG
+        const address = document.getElementById("address").innerHTML;
+        const addy = bsv.Address.fromString(address);
+        const pubKeyHash = addy.hashBuffer.toString("hex");
+        currentStack.push("OP_DUP");
+        currentStack.push("OP_HASH160");
+        currentStack.push(pubKeyHash);
+        currentStack.push("OP_EQUALVERIFY");
+        currentStack.push("OP_CHECKSIG");
+        const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+        const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+        document.getElementById("hex").innerHTML = hex;
+        document.getElementById("asm").innerHTML = asm;
+        document.getElementById("binary").innerHTML = hexToBinary(hex);
+        console.log(hex);
+        //add all items to stack display
+        currentStack.forEach((item) => {
+          const stackEl = document.createElement("div");
+          stackEl.innerHTML = item;
+          document.getElementById("stack").appendChild(stackEl);
+          stackEl.addEventListener("click", () => {
+            //remove from stack
+            const index = currentStack.indexOf(item);
+            if (index > -1) {
+              currentStack.splice(index, 1);
+            }
+            console.log(currentStack);
+            //remove from stack display
+            stackEl.remove();
+            //update locking script
+            const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+            const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+            document.getElementById("hex").innerHTML = hex;
+            document.getElementById("asm").innerHTML = asm;
+            document.getElementById("binary").innerHTML = hexToBinary(hex);
+          });
+        });
+      });
+
       document.getElementById("addOpCode").addEventListener("click", addOpCode);
       document.getElementById("addData").addEventListener("click", addData);
       document
@@ -705,7 +754,7 @@
 
         let utxos = await getUtxos(addy);
         console.log(address);
-        // utxos = utxos.filter((utxo) => utxo.satoshis > 1);
+        utxos = utxos.filter((utxo) => utxo.satoshis > 1);
         console.log(utxos);
         const tx = new bsv.Transaction();
         tx.from(utxos);
