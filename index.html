@@ -962,6 +962,12 @@
       };
       document.getElementById("redeem").addEventListener("click", redeemLock);
       //import mnemonic
+
+      //addeventlistener for file upload and change add data button to add file
+      document.getElementById("file").addEventListener("change", () => {
+        document.getElementById("addData").innerHTML = "Add File Data";
+        document.getElementById("addData").style.backgroundColor = "red";
+      });
     </script>
   </body>
 </html>
