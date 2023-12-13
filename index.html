@@ -95,6 +95,21 @@
         margin: 0 auto;
       }
 
+      #header {
+        text-align: center;
+      }
+
+      #myKeys {
+        text-align: center;
+      }
+
+      textarea {
+        width: 100%;
+        max-width: 100%;
+        height: 100px;
+        max-height: 100px;
+      }
+
       @media (max-width: 600px) {
         .container {
           width: 90%;
@@ -282,8 +297,8 @@
       <!-- add data -->
       <p>Add Data</p>
       <!-- checkbox turn off alerts -->
-
-      <input type="text" id="data" />
+      <!-- textarea -->
+      <textarea name="" id="data" cols="30" rows="10"></textarea>
       <!-- file -->
       <p>Upload File</p>
       <input type="file" id="file" />
@@ -531,7 +546,7 @@
           return;
         }
         if (textData) {
-          data = textData;
+          data = textData.trim();
           textCheck = true;
         } else if (fileData) {
           //check if file is image
@@ -666,7 +681,12 @@
       };
 
       const addHashData = () => {
-        const data = document.getElementById("data").value;
+        let data = document.getElementById("data").value;
+        if (!data) {
+          alert("Please enter data");
+          return;
+        }
+        data = data.trim();
         const hash = bsv.crypto.Hash.sha256(Buffer.from(data)).toString("hex");
         console.log(hash);
         currentStack.push(hash);
@@ -708,31 +728,6 @@
             return;
           }
         }
-
-        //   //confirm op code
-        //   if (confirm(`Add ${opCode} to stack?`) === true) {
-        //     currentStack.push(opCode);
-        //     const opEl = document.createElement("div");
-        //     opEl.innerHTML = opCode;
-        //     document.getElementById("stack").appendChild(opEl);
-        //     opEl.addEventListener("click", () => {
-        //       //remove from stack
-        //       const index = currentStack.indexOf(opCode);
-        //       if (index > -1) {
-        //         currentStack.splice(index, 1);
-        //       }
-        //       console.log(currentStack);
-        //       //remove from stack display
-        //       opEl.remove();
-        //       //update locking script
-        //       const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
-        //       const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
-        //       document.getElementById("hex").innerHTML = hex;
-        //       document.getElementById("asm").innerHTML = asm;
-        //       document.getElementById("binary").innerHTML = hexToBinary(hex);
-        //     });
-        //   }
-        // }
         const stackEl = document.createElement("div");
         stackEl.innerHTML = hash;
         document.getElementById("stack").appendChild(stackEl);
