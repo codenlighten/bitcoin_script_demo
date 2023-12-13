@@ -448,6 +448,24 @@
         });
         return utxos;
       };
+
+      const getUtxosWhatsOnchain = async (addy) => {
+        const response = await fetch(
+          `https://api.whatsonchain.com/v1/bsv/main/address/${addy}/unspent`
+        );
+        const res = await response.json();
+
+        const utxos = res.map((utxo) => {
+          return {
+            txid: utxo.tx_hash,
+            vout: utxo.tx_pos,
+            script: bsv.Script.buildPublicKeyHashOut(addy).toHex(),
+            satoshis: utxo.value,
+          };
+        });
+        return utxos;
+      };
+
       let currentStack = [];
 
       const hexToBinary = (hex) => {
@@ -803,7 +821,8 @@
         const address = document.getElementById("address").innerHTML;
         const addy = bsv.Address.fromString(address);
 
-        let utxos = await getUtxos(addy);
+        // let utxos = await getUtxos(addy);
+        let utxos = await getUtxosWhatsOnchain(addy);
         console.log(address);
         utxos = utxos.filter((utxo) => utxo.satoshis > 1);
         console.log(utxos);
