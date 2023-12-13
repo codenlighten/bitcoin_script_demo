@@ -326,6 +326,7 @@
     </div>
     <div class="container" id="finalScript">
       <h2>Final Script</h2>
+      <button style="display: none" id="genBroadcast">Broadcast TX</button>
       <p id="lockResults" title="click to copy"></p>
     </div>
     <div class="container" id="redeemLock">
@@ -464,6 +465,23 @@
           };
         });
         return utxos;
+      };
+
+      const broadcastTx = async (tx) => {
+        //  whatsonchain
+        const response = await fetch(
+          `https://api.whatsonchain.com/v1/bsv/main/tx/raw`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ txhex: tx }),
+          }
+        );
+        const res = await response.json();
+        console.log(res);
+        return res;
       };
 
       let currentStack = [];
@@ -817,6 +835,24 @@
       document
         .getElementById("addPubKeyHash")
         .addEventListener("click", addPubKeyHash);
+
+      const broadcast = document.getElementById("genBroadcast");
+      broadcast.addEventListener("click", async () => {
+        try {
+          const tx = document.getElementById("lockResults").innerHTML;
+          const txid = await broadcastTx(tx);
+          //add txid to lockresults
+          document.getElementById(
+            "lockResults"
+          ).innerHTML = `Broadcasted: <a href="https://whatsonchain.com/tx/${txid}" target="_blank">${txid}</a>`;
+          console.log(txid);
+          alert("Broadcasted");
+        } catch (err) {
+          console.log(err);
+          alert("Error");
+        }
+      });
+
       const buildLockingScript = async () => {
         const address = document.getElementById("address").innerHTML;
         const addy = bsv.Address.fromString(address);
@@ -849,6 +885,8 @@
         });
         //scroll to results
         document.getElementById("lockResults").scrollIntoView();
+        //display broadcast button
+        document.getElementById("genBroadcast").style.display = "block";
       };
 
       document.getElementById("broadcast").addEventListener("click", () => {
