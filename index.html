@@ -888,15 +888,7 @@
             parseInt(amount)
           )
           .toString("hex");
-        const sighash = bsv.Transaction.sighash.sighash(
-          tx,
-          bsv.crypto.Signature.SIGHASH_ALL |
-            bsv.crypto.Signature.SIGHASH_FORKID,
-          0,
-          bsv.Script.fromASM(currentStack.join(" ")),
-          parseInt(amount)
-        );
-        console.log(sighash.toString("hex"));
+
         console.log(preimage);
         document.getElementById("preimage").innerHTML = `Preimage: ${preimage}`;
         tx.change(addy);
