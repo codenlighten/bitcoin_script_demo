@@ -328,6 +328,7 @@
       <h2>Final Script</h2>
       <button style="display: none" id="genBroadcast">Broadcast TX</button>
       <p id="lockResults" title="click to copy"></p>
+      <p id="preimage"></p>
     </div>
     <div class="container" id="redeemLock">
       <h2>Redeem a Locking Script</h2>
@@ -876,10 +877,37 @@
             satoshis: parseInt(amount),
           })
         );
+        //get preimage
+        const preimage = bsv.Transaction.sighash
+          .sighashPreimage(
+            tx,
+            bsv.Script.fromASM(currentStack.join(" ")),
+            0,
+            bsv.crypto.Signature.SIGHASH_ALL |
+              bsv.crypto.Signature.SIGHASH_FORKID,
+            parseInt(amount)
+          )
+          .toString("hex");
+        const sighash = bsv.Transaction.sighash.sighash(
+          tx,
+          bsv.crypto.Signature.SIGHASH_ALL |
+            bsv.crypto.Signature.SIGHASH_FORKID,
+          0,
+          bsv.Script.fromASM(currentStack.join(" ")),
+          parseInt(amount)
+        );
+        console.log(sighash.toString("hex"));
+        console.log(preimage);
+        document.getElementById("preimage").innerHTML = `Preimage: ${preimage}`;
         tx.change(addy);
         tx.feePerKb(15);
         tx.sign(keys.privateKey);
         const txHex = tx.toString();
+        // check if txHex includes preimage
+        if (!txHex.includes(preimage)) {
+          alert("Error, preimage not included in tx");
+          return;
+        }
         //add to broadcast binary
         document.getElementById("binary").innerHTML = txHex;
         document.getElementById("lockResults").innerHTML = txHex;
