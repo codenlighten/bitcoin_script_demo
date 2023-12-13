@@ -298,7 +298,13 @@
       <p>Add Data</p>
       <!-- checkbox turn off alerts -->
       <!-- textarea -->
-      <textarea name="" id="data" cols="30" rows="10"></textarea>
+      <textarea
+        placeholder="data"
+        name=""
+        id="data"
+        cols="30"
+        rows="10"
+      ></textarea>
       <!-- file -->
       <p>Upload File</p>
       <input type="file" id="file" />
@@ -306,6 +312,10 @@
       <button id="addHashData">Add Hash of Data (OP_SHA256)</button>
       <input type="checkbox" id="alertCheck" />
       <label for="alertCheck">Turn on alerts</label>
+      <!-- add number -->
+      <!-- <p>Add Number</p>
+      <input placeholder="number" type="number" id="number" />
+      <button id="addNumber">Add Number</button> -->
       <p>Add Address of Recipient for PKH</p>
       <input placeholder="change receiever" type="text" id="receiver" />
       <!-- amount -->
@@ -490,6 +500,7 @@
       const hexToBinary = (hex) => {
         return parseInt(hex, 16).toString(2);
       };
+
       const addOpCode = () => {
         const opCode = document.getElementById("opcodeSelect").value;
         currentStack.push(opCode);
@@ -564,6 +575,49 @@
         });
       };
 
+      // const numToHex = (num) => {
+      //   if (num < 17) {
+      //     return `OP_${num}`;
+      //   } else if (num < 76) {
+      //     return `0x${num.toString(16)}`;
+      //   }
+      // };
+      const addNumber = () => {
+        const number = document.getElementById("number").value;
+        currentStack.push(numToHex(number));
+        console.log(currentStack);
+        const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+        const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+        document.getElementById("hex").innerHTML = hex;
+        document.getElementById("asm").innerHTML = asm;
+        document.getElementById("binary").innerHTML = hexToBinary(hex);
+        console.log(hex);
+        const stackEl = document.createElement("div");
+        stackEl.innerHTML = number;
+        document.getElementById("stack").appendChild(stackEl);
+        stackEl.addEventListener("click", () => {
+          //remove from stack
+          const index = currentStack.indexOf(number);
+          if (index > -1) {
+            currentStack.splice(index, 1);
+          }
+          console.log(currentStack);
+          //remove from stack display
+          stackEl.remove();
+          //update locking script
+          const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+          const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+          document.getElementById("hex").innerHTML = hex;
+          document.getElementById("asm").innerHTML = asm;
+          document.getElementById("binary").innerHTML = hexToBinary(hex);
+        });
+      };
+
+      //add number
+      // document.getElementById("addNumber").addEventListener("click", () => {
+      //   addNumber();
+      // });
+
       let imageCheck = false;
       let textCheck = false;
 
@@ -614,6 +668,7 @@
           }
         }
         const dataHex = Buffer.from(data).toString("hex");
+
         console.log(dataHex.length);
         const length = dataHex.length / 2;
         console.log(alertCheck);
@@ -650,7 +705,8 @@
         }
 
         if (textCheck) {
-          currentStack.push(Buffer.from(data).toString("hex"));
+          currentStack.push(dataHex);
+          textCheck = false;
         } else {
           currentStack.push(dataHex);
           //change add data button to add data again
