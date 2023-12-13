@@ -652,6 +652,10 @@
           currentStack.push(Buffer.from(data).toString("hex"));
         } else {
           currentStack.push(dataHex);
+          //change add data button to add data again
+          document.getElementById("addData").innerHTML = "Add Data";
+          //remove bg color
+          document.getElementById("addData").style.backgroundColor = "";
         }
         console.log(currentStack);
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
