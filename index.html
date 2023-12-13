@@ -278,12 +278,16 @@
       <button id="p2pkh">P2PKH</button>
       <!-- add data -->
       <p>Add Data</p>
+      <!-- checkbox turn off alerts -->
+
       <input type="text" id="data" />
       <!-- file -->
       <p>Upload File</p>
       <input type="file" id="file" />
       <button id="addData">Add Data</button>
       <button id="addHashData">Add Hash of Data (OP_SHA256)</button>
+      <input type="checkbox" id="alertCheck" />
+      <label for="alertCheck">Turn on alerts</label>
       <p>Add Pub Key Hash of Recipient</p>
       <input placeholder="change receiever" type="text" id="receiver" />
       <!-- amount -->
@@ -507,7 +511,9 @@
 
       let imageCheck = false;
       let textCheck = false;
+
       const addData = async () => {
+        let alertCheck = document.getElementById("alertCheck").checked;
         let data = "";
         let bytes = [];
         const textData = document.getElementById("data").value;
@@ -555,10 +561,12 @@
         const dataHex = Buffer.from(data).toString("hex");
         console.log(dataHex.length);
         const length = dataHex.length / 2;
+        console.log(alertCheck);
         //check if current stack is empty or last item is not a push data op code
         if (
-          currentStack.length === 0 ||
-          !currentStack[currentStack.length - 1].includes("OP_PUSHDATA")
+          (alertCheck && currentStack.length === 0) || //if alert check is true, don't alert
+          (alertCheck &&
+            !currentStack[currentStack.length - 1].includes("OP_PUSHDATA"))
         ) {
           let opCode = "OP_PUSHDATA1";
 
@@ -690,24 +698,37 @@
         document.getElementById("asm").innerHTML = asm;
         document.getElementById("binary").innerHTML = hexToBinary(hex);
         console.log(hex);
-        // if (
-        //   currentStack.length === 0 ||
-        //   !currentStack[currentStack.length - 1].includes("OP_PUSHDATA")
-        // ) {
-        //   let opCode = "OP_PUSHDATA1";
-        //   console.log(length);
-        //   // must be less than 4GB
-        //   if (length < 76) {
-        //     opCode = "OP_PUSHDATA1";
-        //   } else if (length < 256) {
-        //     opCode = "OP_PUSHDATA2";
-        //     // 4GB
-        //   } else if (length > 256 && length < 4294967296) {
-        //     opCode = "OP_PUSHDATA4";
-        //   } else {
-        //     alert("File too large");
-        //     return;
-        //   }
+        const alertCheck = document.getElementById("alertCheck").checked;
+        if (
+          (alertCheck && currentStack.length === 0) || //if alert check is true, don't alert
+          (alertCheck &&
+            !currentStack[currentStack.length - 1].includes("OP_PUSHDATA"))
+        ) {
+          let opCode = "OP_PUSHDATA1";
+
+          console.log(length);
+          // must be less than 4GB
+          if (length < 76) {
+            opCode = "OP_PUSHDATA1";
+            alert(
+              `Data length is ${length} bytes, consider preceding this data with OP_PUSHDATA1`
+            );
+          } else if (length < 256) {
+            opCode = "OP_PUSHDATA2";
+            alert(
+              `Data length is ${length} bytes, consider preceding this data with OP_PUSHDATA2`
+            );
+            // 4GB
+          } else if (length > 256 && length < 4294967296) {
+            opCode = "OP_PUSHDATA4";
+            alert(
+              `Data length is ${length} bytes, consider preceding this data with OP_PUSHDATA4`
+            );
+          } else {
+            alert("File too large");
+            return;
+          }
+        }
 
         //   //confirm op code
         //   if (confirm(`Add ${opCode} to stack?`) === true) {
