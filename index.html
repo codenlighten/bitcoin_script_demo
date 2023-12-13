@@ -556,25 +556,35 @@
         console.log(dataHex.length);
         const length = dataHex.length / 2;
         //check if current stack is empty or last item is not a push data op code
-        // if (
-        //   currentStack.length === 0 ||
-        //   !currentStack[currentStack.length - 1].includes("OP_PUSHDATA")
-        // ) {
-        //   let opCode = "OP_PUSHDATA1";
-        //   console.log(length);
-        //   // must be less than 4GB
-        //   if (length < 76) {
-        //     opCode = "OP_PUSHDATA1";
-        //   } else if (length < 256) {
-        //     opCode = "OP_PUSHDATA2";
-        //     // 4GB
-        //   } else if (length > 256 && length < 4294967296) {
-        //     opCode = "OP_PUSHDATA4";
-        //   } else {
-        //     alert("File too large");
-        //     return;
-        //   }
+        if (
+          currentStack.length === 0 ||
+          !currentStack[currentStack.length - 1].includes("OP_PUSHDATA")
+        ) {
+          let opCode = "OP_PUSHDATA1";
 
+          console.log(length);
+          // must be less than 4GB
+          if (length < 76) {
+            opCode = "OP_PUSHDATA1";
+            alert(
+              `Data length is ${length} bytes, consider preceding this data with OP_PUSHDATA1`
+            );
+          } else if (length < 256) {
+            opCode = "OP_PUSHDATA2";
+            alert(
+              `Data length is ${length} bytes, consider preceding this data with OP_PUSHDATA2`
+            );
+            // 4GB
+          } else if (length > 256 && length < 4294967296) {
+            opCode = "OP_PUSHDATA4";
+            alert(
+              `Data length is ${length} bytes, consider preceding this data with OP_PUSHDATA4`
+            );
+          } else {
+            alert("File too large");
+            return;
+          }
+        }
         //   //confirm op code
         //   if (confirm(`Add ${opCode} to stack?`) === true) {
         //     currentStack.push(opCode);
