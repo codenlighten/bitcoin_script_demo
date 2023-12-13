@@ -556,49 +556,49 @@
         console.log(dataHex.length);
         const length = dataHex.length / 2;
         //check if current stack is empty or last item is not a push data op code
-        if (
-          currentStack.length === 0 ||
-          !currentStack[currentStack.length - 1].includes("OP_PUSHDATA")
-        ) {
-          let opCode = "OP_PUSHDATA1";
-          console.log(length);
-          // must be less than 4GB
-          if (length < 76) {
-            opCode = "OP_PUSHDATA1";
-          } else if (length < 256) {
-            opCode = "OP_PUSHDATA2";
-            // 4GB
-          } else if (length > 256 && length < 4294967296) {
-            opCode = "OP_PUSHDATA4";
-          } else {
-            alert("File too large");
-            return;
-          }
+        // if (
+        //   currentStack.length === 0 ||
+        //   !currentStack[currentStack.length - 1].includes("OP_PUSHDATA")
+        // ) {
+        //   let opCode = "OP_PUSHDATA1";
+        //   console.log(length);
+        //   // must be less than 4GB
+        //   if (length < 76) {
+        //     opCode = "OP_PUSHDATA1";
+        //   } else if (length < 256) {
+        //     opCode = "OP_PUSHDATA2";
+        //     // 4GB
+        //   } else if (length > 256 && length < 4294967296) {
+        //     opCode = "OP_PUSHDATA4";
+        //   } else {
+        //     alert("File too large");
+        //     return;
+        //   }
 
-          //confirm op code
-          if (confirm(`Add ${opCode} to stack?`) === true) {
-            currentStack.push(opCode);
-            const opEl = document.createElement("div");
-            opEl.innerHTML = opCode;
-            document.getElementById("stack").appendChild(opEl);
-            opEl.addEventListener("click", () => {
-              //remove from stack
-              const index = currentStack.indexOf(opCode);
-              if (index > -1) {
-                currentStack.splice(index, 1);
-              }
-              console.log(currentStack);
-              //remove from stack display
-              opEl.remove();
-              //update locking script
-              const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
-              const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
-              document.getElementById("hex").innerHTML = hex;
-              document.getElementById("asm").innerHTML = asm;
-              document.getElementById("binary").innerHTML = hexToBinary(hex);
-            });
-          }
-        }
+        //   //confirm op code
+        //   if (confirm(`Add ${opCode} to stack?`) === true) {
+        //     currentStack.push(opCode);
+        //     const opEl = document.createElement("div");
+        //     opEl.innerHTML = opCode;
+        //     document.getElementById("stack").appendChild(opEl);
+        //     opEl.addEventListener("click", () => {
+        //       //remove from stack
+        //       const index = currentStack.indexOf(opCode);
+        //       if (index > -1) {
+        //         currentStack.splice(index, 1);
+        //       }
+        //       console.log(currentStack);
+        //       //remove from stack display
+        //       opEl.remove();
+        //       //update locking script
+        //       const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+        //       const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+        //       document.getElementById("hex").innerHTML = hex;
+        //       document.getElementById("asm").innerHTML = asm;
+        //       document.getElementById("binary").innerHTML = hexToBinary(hex);
+        //     });
+        //   }
+        // }
         // currentStack.push(dataHex);
         if (textCheck) {
           currentStack.push(Buffer.from(data).toString("hex"));
@@ -680,6 +680,49 @@
         document.getElementById("asm").innerHTML = asm;
         document.getElementById("binary").innerHTML = hexToBinary(hex);
         console.log(hex);
+        // if (
+        //   currentStack.length === 0 ||
+        //   !currentStack[currentStack.length - 1].includes("OP_PUSHDATA")
+        // ) {
+        //   let opCode = "OP_PUSHDATA1";
+        //   console.log(length);
+        //   // must be less than 4GB
+        //   if (length < 76) {
+        //     opCode = "OP_PUSHDATA1";
+        //   } else if (length < 256) {
+        //     opCode = "OP_PUSHDATA2";
+        //     // 4GB
+        //   } else if (length > 256 && length < 4294967296) {
+        //     opCode = "OP_PUSHDATA4";
+        //   } else {
+        //     alert("File too large");
+        //     return;
+        //   }
+
+        //   //confirm op code
+        //   if (confirm(`Add ${opCode} to stack?`) === true) {
+        //     currentStack.push(opCode);
+        //     const opEl = document.createElement("div");
+        //     opEl.innerHTML = opCode;
+        //     document.getElementById("stack").appendChild(opEl);
+        //     opEl.addEventListener("click", () => {
+        //       //remove from stack
+        //       const index = currentStack.indexOf(opCode);
+        //       if (index > -1) {
+        //         currentStack.splice(index, 1);
+        //       }
+        //       console.log(currentStack);
+        //       //remove from stack display
+        //       opEl.remove();
+        //       //update locking script
+        //       const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+        //       const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+        //       document.getElementById("hex").innerHTML = hex;
+        //       document.getElementById("asm").innerHTML = asm;
+        //       document.getElementById("binary").innerHTML = hexToBinary(hex);
+        //     });
+        //   }
+        // }
         const stackEl = document.createElement("div");
         stackEl.innerHTML = hash;
         document.getElementById("stack").appendChild(stackEl);
