@@ -895,11 +895,7 @@
         tx.feePerKb(15);
         tx.sign(keys.privateKey);
         const txHex = tx.toString();
-        // check if txHex includes preimage
-        if (!txHex.includes(preimage)) {
-          alert("Error, preimage not included in tx");
-          return;
-        }
+
         //add to broadcast binary
         document.getElementById("binary").innerHTML = txHex;
         document.getElementById("lockResults").innerHTML = txHex;
