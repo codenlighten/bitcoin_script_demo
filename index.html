@@ -513,7 +513,7 @@
       let textCheck = false;
 
       const addData = async () => {
-        let alertCheck = document.getElementById("alertCheck").checked;
+        const alertCheck = document.getElementById("alertCheck").checked;
         let data = "";
         let bytes = [];
         const textData = document.getElementById("data").value;
@@ -593,31 +593,7 @@
             return;
           }
         }
-        //   //confirm op code
-        //   if (confirm(`Add ${opCode} to stack?`) === true) {
-        //     currentStack.push(opCode);
-        //     const opEl = document.createElement("div");
-        //     opEl.innerHTML = opCode;
-        //     document.getElementById("stack").appendChild(opEl);
-        //     opEl.addEventListener("click", () => {
-        //       //remove from stack
-        //       const index = currentStack.indexOf(opCode);
-        //       if (index > -1) {
-        //         currentStack.splice(index, 1);
-        //       }
-        //       console.log(currentStack);
-        //       //remove from stack display
-        //       opEl.remove();
-        //       //update locking script
-        //       const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
-        //       const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
-        //       document.getElementById("hex").innerHTML = hex;
-        //       document.getElementById("asm").innerHTML = asm;
-        //       document.getElementById("binary").innerHTML = hexToBinary(hex);
-        //     });
-        //   }
-        // }
-        // currentStack.push(dataHex);
+
         if (textCheck) {
           currentStack.push(Buffer.from(data).toString("hex"));
         } else {
