@@ -168,12 +168,17 @@
       <button id="importMnemonic">Import Mnemonic</button>
     </div>
     <div class="container" id="recipientAddress">
-      <h2>Recipient Address</h2>
+      <h2>Recipient Keys</h2>
       <p>
         The following address is used as the recipient address in the examples.
       </p>
       <p><strong>Address:</strong> <span id="recipient"></span></p>
+      <!-- privateKey -->
+      <!-- publicKey -->
+      <p><strong>Private Key</strong> <span id="recipientPrivateKey"></span></p>
+      <p><strong>Public Key</strong> <span id="recipientPublicKey"></span></p>
     </div>
+
     <div class="container" id="examples">
       <h2>Add Stack Item</h2>
       <select name="" id="opcodeSelect">
@@ -412,6 +417,7 @@
           document.getElementById("privateKey").innerHTML = keys.privateKey;
           document.getElementById("publicKey").innerHTML = keys.publicKey;
           document.getElementById("address").innerHTML = keys.address;
+
           getBalance(keys.address).then((balance) => {
             document.getElementById("balance").innerHTML = balance.balance;
           });
@@ -460,6 +466,11 @@
         //display balance
         const { balance } = await getBalance(keys.address);
         document.getElementById("balance").innerHTML = balance;
+        //display recipient keys
+        document.getElementById("recipientPrivateKey").innerHTML =
+          recipientKeys.privateKey;
+        document.getElementById("recipientPublicKey").innerHTML =
+          recipientKeys.publicKey;
       });
       const getUtxos = async (addy) => {
         const response = await fetch(
