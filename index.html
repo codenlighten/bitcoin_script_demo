@@ -434,9 +434,12 @@
       let keys;
       let recipientKeys;
       document.addEventListener("DOMContentLoaded", async () => {
-        //check localStorage for keys
-        keys = JSON.parse(localStorage.getItem("keys"));
-        recipientKeys = JSON.parse(localStorage.getItem("recipientKeys"));
+        if (localStorage.getItem("keys")) {
+          keys = JSON.parse(localStorage.getItem("keys"));
+        }
+        if (localStorage.getItem("recipientKeys")) {
+          recipientKeys = JSON.parse(localStorage.getItem("recipientKeys"));
+        }
         if (!keys) {
           keys = generateKeys();
           recipientKeys = generateKeys();
