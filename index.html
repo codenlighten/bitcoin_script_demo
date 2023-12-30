@@ -359,6 +359,7 @@
       <p>&copy; 2023 CodenLighten. All Rights Reserved</p>
     </div>
     <script>
+      let currentUtXos = [];
       const Buffer = bsv.deps.Buffer;
       const path = "m/44'/0'/0'/0/0";
       const generateKeys = () => {
@@ -961,10 +962,16 @@
         const address = document.getElementById("address").innerHTML;
         const addy = bsv.Address.fromString(address);
 
-        // let utxos = await getUtxos(addy);
-        let utxos = await getUtxosWhatsOnchain(addy);
+        let utxos = [];
+        if (currentUtXos.length === 0) {
+          utxos = await getUtxosWhatsOnchain(addy);
+          console.log(address);
+          utxos = utxos.filter((utxo) => utxo.satoshis > 1);
+        } else {
+          utxos = currentUtXos;
+        }
         console.log(address);
-        utxos = utxos.filter((utxo) => utxo.satoshis > 1);
+
         console.log(utxos);
         const tx = new bsv.Transaction();
         tx.from(utxos);
@@ -1037,47 +1044,24 @@
         const tx = new bsv.Transaction(txHex);
         console.log(tx);
         const lockingScript = tx.outputs[0].script;
-        console.log(lockingScript);
-        const asm = lockingScript.toASM();
-
-        //display current locking script
-        document.getElementById("currentLock").innerHTML =
-          lockingScript.toASM();
-        //   add to bottom of stack
-        currentStack.push(asm);
-        //display current stack
-        document.getElementById("stack").innerHTML = "";
-        currentStack.forEach((item) => {
-          const stackEl = document.createElement("div");
-          stackEl.innerHTML = item;
-          document.getElementById("stack").appendChild(stackEl);
-          stackEl.addEventListener("click", () => {
-            //remove from stack
-            const index = currentStack.indexOf(item);
-            if (index > -1) {
-              currentStack.splice(index, 1);
-            }
-            console.log(currentStack);
-            //remove from stack display
-            stackEl.remove();
-            //update locking script
-            const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
-            const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
-            document.getElementById("hex").innerHTML = hex;
-            document.getElementById("asm").innerHTML = asm;
-            document.getElementById("binary").innerHTML = hexToBinary(hex);
-          });
+        //add to current utxos
+        const preimage = bsv.Transaction.sighash
+          .sighashPreimage(
+            tx,
+            lockingScript,
+            0,
+            bsv.crypto.Signature.SIGHASH_ALL |
+              bsv.crypto.Signature.SIGHASH_FORKID,
+            tx.outputs[0].satoshis
+          )
+          .toString("hex");
+        currentUtXos.push({
+          txid: txid,
+          vout: 0,
+          script: lockingScript.toHex(),
+          satoshis: tx.outputs[0].satoshis,
+          preimage: preimage.toString("hex"),
         });
-        //display current unlocking script
-        document.getElementById("currentUnlock").innerHTML =
-          currentStack.join(" ");
-        //combine scripts
-        const combinedScript = bsv.Script.fromASM(
-          currentStack.join(" ")
-        ).toHex();
-        document.getElementById("combinedScript").innerHTML = combinedScript;
-        //scroll to results
-        document.getElementById("combinedScript").scrollIntoView();
       };
       document.getElementById("redeem").addEventListener("click", redeemLock);
       //import mnemonic
