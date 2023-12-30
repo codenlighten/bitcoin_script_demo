@@ -1149,6 +1149,11 @@
           .toString("hex");
         //add preimage to text area
         document.getElementById("data").value = preimage;
+        // scroll to data
+        document.getElementById("data").scrollIntoView();
+        alert(
+          "transaction loaded as current utxo, preimage added to data to use in unlocking script if needed"
+        );
         currentUtxos.push({
           txid: txid,
           vout: 0,
