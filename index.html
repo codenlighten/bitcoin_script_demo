@@ -320,6 +320,8 @@
       <button id="addDoubleHashData">
         Add Double Hash of Data (OP_HASH256)
       </button>
+      <!-- add signature of current stack -->
+      <button id="addSignature">Add Signature of Current Stack</button>
       <input type="checkbox" id="alertCheck" />
       <label for="alertCheck">Turn on alerts</label>
       <!-- add number -->
@@ -364,6 +366,8 @@
     </div>
     <script>
       let currentUtxos = [];
+      // current preimage
+      let currentPreimage = "";
       const Buffer = bsv.deps.Buffer;
       const path = "m/44'/0'/0'/0/0";
       const generateKeys = () => {
@@ -901,7 +905,7 @@
           return;
         }
         data = data.trim();
-        // double hash with sha256
+        // double hash with hash256
         const hash = bsv.crypto.Hash.sha256(Buffer.from(data)).toString("hex");
         const doubleHash = bsv.crypto.Hash.sha256(Buffer.from(hash)).toString(
           "hex"
@@ -1077,7 +1081,7 @@
               parseInt(amount)
             )
             .toString("hex");
-
+          currentPreimage = Buffer.from(preimage, "hex");
           console.log(preimage);
           document.getElementById(
             "preimage"
@@ -1134,6 +1138,46 @@
         const res = await response.text();
         return res;
       };
+
+      // add signature to current preimage
+      const addSignature = async () => {
+        const privateKey = keys.privateKey;
+        const doubleHash = bsv.crypto.Hash.sha256(
+          bsv.crypto.Hash.sha256(currentPreimage)
+        );
+        const sig = bsv.crypto.ECDSA.sign(
+          doubleHash,
+          bsv.PrivateKey.fromWIF(privateKey)
+        ).toString();
+        console.log(sig);
+        currentStack.push(sig);
+        const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+        const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+        document.getElementById("hex").innerHTML = hex;
+        document.getElementById("asm").innerHTML = asm;
+        document.getElementById("binary").innerHTML = hexToBinary(hex);
+        console.log(hex);
+        const stackEl = document.createElement("div");
+        stackEl.innerHTML = sig;
+        document.getElementById("stack").appendChild(stackEl);
+        stackEl.addEventListener("click", () => {
+          //remove from stack
+          const index = currentStack.indexOf(sig);
+          if (index > -1) {
+            currentStack.splice(index, 1);
+          }
+          console.log(currentStack);
+          //remove from stack display
+          stackEl.remove();
+          //update locking script
+          const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+          const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+          document.getElementById("hex").innerHTML = hex;
+          document.getElementById("asm").innerHTML = asm;
+          document.getElementById("binary").innerHTML = hexToBinary(hex);
+        });
+      };
+
       const redeemLock = async () => {
         // use current opcode stack for users unlock script
         const txid = document.getElementById("txidInput").value;
@@ -1158,6 +1202,7 @@
         //add preimage to text area
         document.getElementById("data").value = preimage;
         // scroll to data
+        currentPreimage = Buffer.from(preimage, "hex");
         document.getElementById("data").scrollIntoView();
         alert(
           "transaction loaded as current utxo, preimage added to data to use in unlocking script if needed"
