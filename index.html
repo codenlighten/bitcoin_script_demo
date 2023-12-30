@@ -1015,7 +1015,7 @@
           tx.addOutput(
             new bsv.Transaction.Output({
               script: bsv.Script.buildPublicKeyHashOut(address),
-              satoshis: amount,
+              satoshis: amount > 1 ? amount - 1 : amount,
             })
           );
           txHex = tx.toString();
