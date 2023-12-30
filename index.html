@@ -833,10 +833,12 @@
 
       //add pubkey
       const addPubKey = () => {
-        const receiever = document.getElementById("receiver").value;
-        const address = bsv.Address.fromString(receiever);
-        const pubKey = address.hashBuffer.toString("hex");
+        //get public key from private key
+        const pubKey = bsv.PublicKey.fromPrivateKey(
+          bsv.PrivateKey.fromString(keys.privateKey)
+        ).toString();
         currentStack.push(pubKey);
+        console.log(currentStack);
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
         const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
         document.getElementById("hex").innerHTML = hex;
