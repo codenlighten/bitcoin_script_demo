@@ -833,10 +833,8 @@
 
       //add pubkey
       const addPubKey = () => {
-        //get public key from private key
-        const pubKey = bsv.PublicKey.fromPrivateKey(
-          bsv.PrivateKey.fromString(keys.privateKey)
-        ).toString();
+        //from keys
+        const pubKey = bsv.PublicKey.fromString(keys.publicKey).toString("hex");
         currentStack.push(pubKey);
         console.log(currentStack);
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
