@@ -319,9 +319,9 @@
       <input type="checkbox" id="alertCheck" />
       <label for="alertCheck">Turn on alerts</label>
       <!-- add number -->
-      <!-- <p>Add Number</p>
+      <p>Add Number</p>
       <input placeholder="number" type="number" id="number" />
-      <button id="addNumber">Add Number</button> -->
+      <button id="addNumber">Add Number</button>
       <p>Add Address of Recipient for PKH</p>
       <input placeholder="change receiever" type="text" id="receiver" />
       <!-- amount -->
@@ -359,22 +359,6 @@
       <p>&copy; 2023 CodenLighten. All Rights Reserved</p>
     </div>
     <script>
-      // add 1 to 76 to select
-      // add op code
-
-      // const select = document.getElementById("opcodeSelect");
-      // for (let i = 1; i < 76; i++) {
-      //   // 0x01 through 0x4b
-      //   const option = document.createElement("option");
-      //   if (i < 10) {
-      //     option.value = `0x0${i.toString(16)}`;
-      //   } else {
-      //     option.value = `0x${i.toString(16)}`;
-      //   }
-      //   option.innerHTML = i;
-      //   select.appendChild(option);
-      // }
-
       const Buffer = bsv.deps.Buffer;
       const path = "m/44'/0'/0'/0/0";
       const generateKeys = () => {
@@ -528,9 +512,9 @@
 
       let currentStack = [];
 
-      const hexToBinary = (hex) => {
-        return parseInt(hex, 16).toString(2);
-      };
+      // const hexToBinary = (hex) => {
+      //   return parseInt(hex, 16).toString(2);
+      // };
       const convertOptoHex = (opcode) => {
         let hex = opcode;
         if (opcode.includes("OP_")) {
@@ -613,15 +597,21 @@
         });
       };
 
-      // const numToHex = (num) => {
-      //   if (num < 17) {
-      //     return `OP_${num}`;
-      //   } else if (num < 76) {
-      //     return `0x${num.toString(16)}`;
-      //   }
-      // };
+      const numToHex = (num) => {
+        if (num < 17) {
+          return `OP_${num}`;
+        } else if (num < 76) {
+          return `0x${num.toString(16)}`;
+        } else {
+          // Convert to little-endian hexadecimal
+          const numBuffer = Buffer.allocUnsafe(4); // Adjust buffer size based on the number's size
+          numBuffer.writeInt32LE(num, 0);
+          return numBuffer.toString("hex");
+        }
+      };
+
       const addNumber = () => {
-        const number = document.getElementById("number").value;
+        const number = parseInt(document.getElementById("number").value, 10);
         currentStack.push(numToHex(number));
         console.log(currentStack);
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
@@ -634,15 +624,15 @@
         stackEl.innerHTML = number;
         document.getElementById("stack").appendChild(stackEl);
         stackEl.addEventListener("click", () => {
-          //remove from stack
-          const index = currentStack.indexOf(number);
+          // Remove from stack
+          const index = currentStack.indexOf(numToHex(number));
           if (index > -1) {
             currentStack.splice(index, 1);
           }
           console.log(currentStack);
-          //remove from stack display
+          // Remove from stack display
           stackEl.remove();
-          //update locking script
+          // Update locking script
           const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
           const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
           document.getElementById("hex").innerHTML = hex;
@@ -651,10 +641,20 @@
         });
       };
 
-      //add number
-      // document.getElementById("addNumber").addEventListener("click", () => {
-      //   addNumber();
-      // });
+      // Additional function to convert hex to binary
+      function hexToBinary(hexString) {
+        return hexString
+          .split("")
+          .map((hexDigit) => {
+            return parseInt(hexDigit, 16).toString(2).padStart(4, "0");
+          })
+          .join("");
+      }
+
+      // add number
+      document.getElementById("addNumber").addEventListener("click", () => {
+        addNumber();
+      });
 
       let imageCheck = false;
       let textCheck = false;
