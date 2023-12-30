@@ -1014,6 +1014,7 @@
           tx.addOutput(
             new bsv.Transaction.Output({
               script: bsv.Script.buildPublicKeyHashOut(address),
+              satoshis: amount,
             })
           );
         }
