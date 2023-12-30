@@ -359,7 +359,7 @@
       <p>&copy; 2023 CodenLighten. All Rights Reserved</p>
     </div>
     <script>
-      let currentUtXos = [];
+      let currentUtxos = [];
       const Buffer = bsv.deps.Buffer;
       const path = "m/44'/0'/0'/0/0";
       const generateKeys = () => {
@@ -963,12 +963,12 @@
         const addy = bsv.Address.fromString(address);
 
         let utxos = [];
-        if (currentUtXos.length === 0) {
+        if (currentUtxos.length === 0) {
           utxos = await getUtxosWhatsOnchain(addy);
           console.log(address);
           utxos = utxos.filter((utxo) => utxo.satoshis > 1);
         } else {
-          utxos = currentUtXos;
+          utxos = currentUtxos;
         }
         console.log(address);
 
@@ -1055,7 +1055,7 @@
             tx.outputs[0].satoshis
           )
           .toString("hex");
-        currentUtXos.push({
+        currentUtxos.push({
           txid: txid,
           vout: 0,
           script: lockingScript.toHex(),
