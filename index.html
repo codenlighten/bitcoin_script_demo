@@ -1009,7 +1009,16 @@
           // set input script to current stack
           const redeemScript = bsv.Script.fromASM(currentStack.join(" "));
           tx.inputs[0].setScript(redeemScript);
-          tx.to(addy, currentUtxos[0].satoshis);
+          //add currentutxos amount to recipient
+          const amount = currentUtxos[0].satoshis;
+          tx.addOutput(
+            new bsv.Transaction.Output({
+              script: bsv.Script.buildPublicKeyHashOut(
+                recipientKeys.address
+              ).toHex(),
+              satoshis: amount,
+            })
+          );
         }
 
         const txHex = tx.toString();
