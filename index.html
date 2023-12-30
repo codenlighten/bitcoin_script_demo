@@ -962,7 +962,11 @@
           document.getElementById("binary").innerHTML = hexToBinary(hex);
         });
       };
-
+      document
+        .getElementById("addDoubleHashData")
+        .addEventListener("click", () => {
+          addDoubleHashData();
+        });
       //add p2pkh
       document.getElementById("p2pkh").addEventListener("click", () => {
         //OP_DUP OP_HASH160 <Public Key Hash> OP_EQUALVERIFY OP_CHECKSIG
