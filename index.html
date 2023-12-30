@@ -316,6 +316,10 @@
       <input type="file" id="file" />
       <button id="addData">Add Plain Data</button>
       <button id="addHashData">Add Hash of Data (OP_SHA256)</button>
+      <!-- double hash -->
+      <button id="addDoubleHashData">
+        Add Double Hash of Data (OP_HASH256)
+      </button>
       <input type="checkbox" id="alertCheck" />
       <label for="alertCheck">Turn on alerts</label>
       <!-- add number -->
@@ -889,6 +893,75 @@
           document.getElementById("binary").innerHTML = hexToBinary(hex);
         });
       };
+      // add double hash data
+      const addDoubleHashData = () => {
+        let data = document.getElementById("data").value;
+        if (!data) {
+          alert("Please enter data");
+          return;
+        }
+        data = data.trim();
+        const hash = bsv.crypto.Hash.hash256(Buffer.from(data)).toString("hex");
+        console.log(hash);
+        currentStack.push(hash);
+        console.log(currentStack);
+        const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+        const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+        document.getElementById("hex").innerHTML = hex;
+        document.getElementById("asm").innerHTML = asm;
+        document.getElementById("binary").innerHTML = hexToBinary(hex);
+        console.log(hex);
+        const alertCheck = document.getElementById("alertCheck").checked;
+        if (
+          (alertCheck && currentStack.length === 0) || //if alert check is true, don't alert
+          (alertCheck &&
+            !currentStack[currentStack.length - 1].includes("OP_PUSHDATA"))
+        ) {
+          let opCode = "OP_PUSHDATA1";
+
+          console.log(length);
+          // must be less than 4GB
+          if (length < 76) {
+            opCode = "OP_PUSHDATA1";
+            alert(
+              `Data length is ${length} bytes, consider preceding this data with OP_PUSHDATA1`
+            );
+          } else if (length < 256) {
+            opCode = "OP_PUSHDATA2";
+            alert(
+              `Data length is ${length} bytes, consider preceding this data with OP_PUSHDATA2`
+            );
+            // 4GB
+          } else if (length > 256 && length < 4294967296) {
+            opCode = "OP_PUSHDATA4";
+            alert(
+              `Data length is ${length} bytes, consider preceding this data with OP_PUSHDATA4`
+            );
+          } else {
+            alert("File too large");
+            return;
+          }
+        }
+        const stackEl = document.createElement("div");
+        stackEl.innerHTML = doubleHash;
+        document.getElementById("stack").appendChild(stackEl);
+        stackEl.addEventListener("click", () => {
+          //remove from stack
+          const index = currentStack.indexOf(doubleHash);
+          if (index > -1) {
+            currentStack.splice(index, 1);
+          }
+          console.log(currentStack);
+          //remove from stack display
+          stackEl.remove();
+          //update locking script
+          const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+          const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+          document.getElementById("hex").innerHTML = hex;
+          document.getElementById("asm").innerHTML = asm;
+          document.getElementById("binary").innerHTML = hexToBinary(hex);
+        });
+      };
 
       //add p2pkh
       document.getElementById("p2pkh").addEventListener("click", () => {
@@ -1074,6 +1147,8 @@
             tx.outputs[0].satoshis
           )
           .toString("hex");
+        //add preimage to text area
+        document.getElementById("data").value = preimage;
         currentUtxos.push({
           txid: txid,
           vout: 0,
