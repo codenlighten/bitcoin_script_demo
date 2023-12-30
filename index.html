@@ -1185,15 +1185,23 @@
           alert("Please load a transaction to sign");
           return;
         }
-        const doubleHash = bsv.crypto.Hash.sha256(
-          bsv.crypto.Hash.sha256(currentPreimage)
+        //der signature of current preimage sighash
+
+        const hash = bsv.crypto.Hash.sha256(
+          Buffer.from(currentPreimage, "hex")
         );
+
+        // Sign the hashed preimage
         const sig = bsv.crypto.ECDSA.sign(
-          doubleHash,
-          bsv.PrivateKey.fromWIF(privateKey)
-        ).toString();
-        console.log(sig);
+          hash,
+          bsv.PrivateKey.fromString(privateKey)
+        )
+          .toDER()
+          .toString("hex");
+
         currentStack.push(sig);
+        console.log(currentStack);
+
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
         const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
         document.getElementById("hex").innerHTML = hex;
