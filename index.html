@@ -975,31 +975,43 @@
         console.log(utxos);
         const tx = new bsv.Transaction();
         tx.from(utxos);
-        const amount = document.getElementById("amount").value;
-        const lock = bsv.Script.fromASM(currentStack.join(" "));
-        tx.addOutput(
-          new bsv.Transaction.Output({
-            script: lock,
-            satoshis: parseInt(amount),
-          })
-        );
-        //get preimage
-        const preimage = bsv.Transaction.sighash
-          .sighashPreimage(
-            tx,
-            bsv.Script.fromASM(currentStack.join(" ")),
-            0,
-            bsv.crypto.Signature.SIGHASH_ALL |
-              bsv.crypto.Signature.SIGHASH_FORKID,
-            parseInt(amount)
-          )
-          .toString("hex");
 
-        console.log(preimage);
-        document.getElementById("preimage").innerHTML = `Preimage: ${preimage}`;
-        tx.change(addy);
-        tx.feePerKb(15);
-        tx.sign(keys.privateKey);
+        if (currentUtxos.length === 0) {
+          const amount = document.getElementById("amount").value;
+          const lock = bsv.Script.fromASM(currentStack.join(" "));
+          tx.addOutput(
+            new bsv.Transaction.Output({
+              script: lock,
+              satoshis: parseInt(amount),
+            })
+          );
+          //get preimage
+          const preimage = bsv.Transaction.sighash
+            .sighashPreimage(
+              tx,
+              bsv.Script.fromASM(currentStack.join(" ")),
+              0,
+              bsv.crypto.Signature.SIGHASH_ALL |
+                bsv.crypto.Signature.SIGHASH_FORKID,
+              parseInt(amount)
+            )
+            .toString("hex");
+
+          console.log(preimage);
+          document.getElementById(
+            "preimage"
+          ).innerHTML = `Preimage: ${preimage}`;
+          tx.change(addy);
+
+          tx.feePerKb(15);
+          tx.sign(keys.privateKey);
+        } else {
+          // set input script to current stack
+          const redeemScript = bsv.Script.fromASM(currentStack.join(" "));
+          tx.inputs[0].setScript(redeemScript);
+          tx.to(addy, currentUtxos[0].satoshis);
+        }
+
         const txHex = tx.toString();
 
         //add to broadcast binary
