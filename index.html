@@ -1178,6 +1178,10 @@
         });
       };
 
+      document
+        .getElementById("addSignature")
+        .addEventListener("click", addSignature);
+
       const redeemLock = async () => {
         // use current opcode stack for users unlock script
         const txid = document.getElementById("txidInput").value;
