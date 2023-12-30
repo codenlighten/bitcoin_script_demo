@@ -1013,8 +1013,7 @@
           const amount = currentUtxos[0].satoshis;
           tx.addOutput(
             new bsv.Transaction.Output({
-              script: bsv.Script.buildPublicKeyHashOut(addy).toHex(),
-              satoshis: amount,
+              script: bsv.Script.buildPublicKeyHashOut(address),
             })
           );
         }
