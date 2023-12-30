@@ -975,7 +975,7 @@
         console.log(utxos);
         const tx = new bsv.Transaction();
         tx.from(utxos);
-
+        let txHex = "";
         if (currentUtxos.length === 0) {
           const amount = document.getElementById("amount").value;
           const lock = bsv.Script.fromASM(currentStack.join(" "));
@@ -1005,6 +1005,7 @@
 
           tx.feePerKb(15);
           tx.sign(keys.privateKey);
+          txHex = tx.toString();
         } else {
           // set input script to current stack
           const redeemScript = bsv.Script.fromASM(currentStack.join(" "));
@@ -1017,9 +1018,8 @@
               satoshis: amount,
             })
           );
+          txHex = tx.toString();
         }
-
-        const txHex = tx.toString();
 
         //add to broadcast binary
         document.getElementById("binary").innerHTML = txHex;
