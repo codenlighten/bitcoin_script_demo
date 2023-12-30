@@ -865,6 +865,9 @@
         });
       };
 
+      document.getElementById("addPubKey").addEventListener("click", () => {
+        addPubKey();
+      });
       const addHashData = () => {
         let data = document.getElementById("data").value;
         if (!data) {
