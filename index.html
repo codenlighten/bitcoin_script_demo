@@ -1142,6 +1142,10 @@
       // add signature to current preimage
       const addSignature = async () => {
         const privateKey = keys.privateKey;
+        if (!currentPreimage) {
+          alert("Please load a transaction to sign");
+          return;
+        }
         const doubleHash = bsv.crypto.Hash.sha256(
           bsv.crypto.Hash.sha256(currentPreimage)
         );
