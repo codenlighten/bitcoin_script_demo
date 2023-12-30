@@ -333,7 +333,9 @@
       <!-- amount -->
       <p>Amount of Satoshis to Lock</p>
       <input value="1" type="text" id="amount" />
-      <button id="addPubKeyHash">Add Recipient(PKH)</button>
+      <!-- addPubkey -->
+      <button id="addPubKey">Add Recipient(PK)</button>
+      <button id="addPubKeyHash">Add Recipient(PKHash)</button>
       <button id="broadcast">Generate Broadcast Script</button>
     </div>
     <div class="container" id="currentStack">
@@ -813,6 +815,40 @@
         stackEl.addEventListener("click", () => {
           //remove from stack
           const index = currentStack.indexOf(pubKeyHash);
+          if (index > -1) {
+            currentStack.splice(index, 1);
+          }
+          //remove from stack display
+          stackEl.remove();
+          console.log(currentStack);
+
+          //update locking script
+          const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+          const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+          document.getElementById("hex").innerHTML = hex;
+          document.getElementById("asm").innerHTML = asm;
+          document.getElementById("binary").innerHTML = hexToBinary(hex);
+        });
+      };
+
+      //add pubkey
+      const addPubKey = () => {
+        const receiever = document.getElementById("receiver").value;
+        const address = bsv.Address.fromString(receiever);
+        const pubKey = address.hashBuffer.toString("hex");
+        currentStack.push(pubKey);
+        const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+        const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+        document.getElementById("hex").innerHTML = hex;
+        document.getElementById("asm").innerHTML = asm;
+        document.getElementById("binary").innerHTML = hexToBinary(hex);
+        console.log(hex);
+        const stackEl = document.createElement("div");
+        stackEl.innerHTML = pubKey;
+        document.getElementById("stack").appendChild(stackEl);
+        stackEl.addEventListener("click", () => {
+          //remove from stack
+          const index = currentStack.indexOf(pubKey);
           if (index > -1) {
             currentStack.splice(index, 1);
           }
