@@ -901,10 +901,14 @@
           return;
         }
         data = data.trim();
-        const hash = bsv.crypto.Hash.hash256(Buffer.from(data)).toString("hex");
-        console.log(hash);
-        currentStack.push(hash);
-        console.log(currentStack);
+        // double hash with sha256
+        const hash = bsv.crypto.Hash.sha256(Buffer.from(data)).toString("hex");
+        const doubleHash = bsv.crypto.Hash.sha256(Buffer.from(hash)).toString(
+          "hex"
+        );
+        console.log(doubleHash);
+        currentStack.push(doubleHash);
+
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
         const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
         document.getElementById("hex").innerHTML = hex;
