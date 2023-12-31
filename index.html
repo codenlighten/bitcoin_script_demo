@@ -334,6 +334,9 @@
       <p>Amount of Satoshis to Lock</p>
       <input value="1" type="text" id="amount" />
       <!-- addPubkey -->
+      <p>Choose nLocktime</p>
+      <input value="0" type="text" id="nLocktime" />
+
       <button id="addPubKey">Add Recipient(PK)</button>
       <button id="addPubKeyHash">Add Recipient(PKHash)</button>
       <button id="broadcast">Generate Broadcast Script</button>
@@ -1086,7 +1089,7 @@
       const buildLockingScript = async () => {
         const address = document.getElementById("address").innerHTML;
         const addy = bsv.Address.fromString(address);
-
+        const nLocktime = parseInt(document.getElementById("nLocktime").value);
         let utxos = [];
         if (currentUtxos.length === 0) {
           utxos = await getUtxosWhatsOnchain(addy);
@@ -1099,6 +1102,10 @@
 
         console.log(utxos);
         const tx = new bsv.Transaction();
+        //nlocktime
+        if (nLocktime > 0) {
+          tx.nLockTime = nLocktime;
+        }
         tx.from(utxos);
         let txHex = "";
         if (currentUtxos.length === 0) {
@@ -1110,15 +1117,18 @@
               satoshis: parseInt(amount),
             })
           );
-          //get preimage
+          //get preimage of utxo[0]
           const preimage = bsv.Transaction.sighash
             .sighashPreimage(
               tx,
-              bsv.Script.fromASM(currentStack.join(" ")),
-              0,
+              //sighash type
               bsv.crypto.Signature.SIGHASH_ALL |
                 bsv.crypto.Signature.SIGHASH_FORKID,
-              parseInt(amount)
+              //input
+              0,
+              utxos[0].script,
+              //amount in BN
+              new bsv.crypto.BN(amount)
             )
             .toString("hex");
           currentPreimage = Buffer.from(preimage, "hex");
@@ -1187,9 +1197,9 @@
           return;
         }
         //der signature of current utxo
-        const hashbuf = bsv.crypto.Hash.sha256(currentPreimage);
+        const sigHash = bsv.crypto.Hash.sha256sha256(preimage);
         const sig = bsv.crypto.ECDSA.sign(
-          hashbuf,
+          sigHash,
           bsv.PrivateKey.fromWIF(privateKey)
         ).toString();
         currentStack.push(sig);
@@ -1237,14 +1247,23 @@
         console.log(tx);
         const lockingScript = tx.outputs[0].script;
         //add to current utxos
+        const utxo = {
+          txid: txid,
+          vout: 0,
+          script: lockingScript.toHex(),
+          satoshis: tx.outputs[0].satoshis,
+        };
         const preimage = bsv.Transaction.sighash
           .sighashPreimage(
             tx,
-            lockingScript,
-            0,
+            //sighash type
             bsv.crypto.Signature.SIGHASH_ALL |
               bsv.crypto.Signature.SIGHASH_FORKID,
-            tx.outputs[0].satoshis
+            //input
+            0,
+            lockingScript.toHex(),
+            //amount in BN
+            new bsv.crypto.BN(tx.outputs[0].satoshis)
           )
           .toString("hex");
         //add preimage to text area
