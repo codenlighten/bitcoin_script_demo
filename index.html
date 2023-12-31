@@ -1027,9 +1027,9 @@
       //add p2pkh
       document.getElementById("p2pkh").addEventListener("click", () => {
         //OP_DUP OP_HASH160 <Public Key Hash> OP_EQUALVERIFY OP_CHECKSIG
-        const address = document.getElementById("address").innerHTML;
-        const addy = bsv.Address.fromString(address);
-        const pubKeyHash = addy.hashBuffer.toString("hex");
+        const recipientAddress = document.getElementById("receiver").value;
+        const address = bsv.Address.fromString(recipientAddress);
+        const pubKeyHash = address.hashBuffer.toString("hex");
         currentStack.push("OP_DUP");
         currentStack.push("OP_HASH160");
         currentStack.push(pubKeyHash);
@@ -1256,6 +1256,8 @@
         console.log(txHex);
         const tx = new bsv.Transaction(txHex);
         console.log(tx);
+        const satoshis = tx.outputs[0].satoshis;
+        console.log(satoshis);
         const lockingScript = tx.outputs[0].script;
         //add to current utxos
         const utxo = {
