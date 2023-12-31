@@ -1207,15 +1207,15 @@
         //convert currentPreimage from hex to 32 byte hashbuffer
         const hashBuffer = bsv.crypto.Hash.sha256sha256(currentPreimage);
         const sig = bsv.crypto.ECDSA.sign(
+          //sighashtype
           hashBuffer,
-          bsv.PrivateKey(privateKey)
+          bsv.PrivateKey.fromString(privateKey)
         );
         // console.log(sig);
         // console.log(sig.toTxFormat());
         // console.log(sig.toDER());
         // console.log(sig.toDER().toString("hex"));
-        currentStack.push(sig.toTxFormat().toString("hex"));
-
+        currentStack.push(sig.toDER().toString("hex"));
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
         const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
         document.getElementById("hex").innerHTML = hex;
