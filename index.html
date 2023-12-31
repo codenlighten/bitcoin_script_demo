@@ -1278,7 +1278,9 @@
             0,
             lockingScript.toHex(),
             //amount in BN
-            new bsv.crypto.BN(tx.outputs[0].satoshis)
+            new bsv.crypto.BN(tx.outputs[0].satoshis),
+            //flags
+            bsv.Script.Interpreter.SCRIPT_ENABLE_SIGHASH_FORKID
           )
           .toString("hex");
         //add preimage to text area
