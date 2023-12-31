@@ -1187,19 +1187,10 @@
           return;
         }
         //der signature of current utxo
-
         const sig = bsv.crypto.ECDSA.sign(
           currentPreimage,
-          bsv.PrivateKey.fromString(privateKey).bn
-        )
-          .set({
-            nhashtype:
-              bsv.crypto.Signature.SIGHASH_ALL |
-              bsv.crypto.Signature.SIGHASH_FORKID,
-          })
-          .toTxFormat()
-          .toString("hex");
-
+          bsv.PrivateKey.fromString(privateKey)
+        ).toString();
         currentStack.push(sig);
         console.log(currentStack);
 
