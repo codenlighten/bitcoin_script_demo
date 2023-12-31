@@ -1134,7 +1134,9 @@
               0,
               utxos[0].script,
               //amount in BN
-              new bsv.crypto.BN(amount)
+              new bsv.crypto.BN(amount),
+              //flags
+              bsv.Script.Interpreter.SCRIPT_ENABLE_SIGHASH_FORKID
             )
             .toString("hex");
           currentPreimage = Buffer.from(preimage, "hex");
