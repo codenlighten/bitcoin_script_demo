@@ -1186,18 +1186,18 @@
           alert("Please load a transaction to sign");
           return;
         }
-        //der signature of current preimage sighash
+        //der signature of current utxo
 
-        const hash = bsv.crypto.Hash.sha256(
-          Buffer.from(currentPreimage, "hex")
-        );
-
-        // Sign the hashed preimage
         const sig = bsv.crypto.ECDSA.sign(
-          hash,
-          bsv.PrivateKey.fromString(privateKey)
+          currentPreimage,
+          bsv.PrivateKey.fromString(privateKey).bn
         )
-          .toDER()
+          .set({
+            nhashtype:
+              bsv.crypto.Signature.SIGHASH_ALL |
+              bsv.crypto.Signature.SIGHASH_FORKID,
+          })
+          .toTxFormat()
           .toString("hex");
 
         currentStack.push(sig);
