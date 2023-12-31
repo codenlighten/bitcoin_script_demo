@@ -1203,14 +1203,13 @@
           return;
         }
         //der signature of current utxo
-        const sigHash = bsv.crypto.Hash.sha256sha256(currentPreimage);
-        //der signature
+        // Sign the preimage directly
         const sig = bsv.crypto.ECDSA.sign(
-          sigHash,
+          Buffer.from(currentPreimage, "hex"),
           bsv.PrivateKey.fromWIF(privateKey)
-        ).toString();
-        console.log(currentStack);
-
+        )
+          .toDER()
+          .toString("hex");
         currentStack.push(sig);
 
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
