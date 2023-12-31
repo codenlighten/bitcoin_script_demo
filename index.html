@@ -1211,6 +1211,8 @@
         ).toString();
         console.log(currentStack);
 
+        currentStack.push(sig);
+
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
         const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
         document.getElementById("hex").innerHTML = hex;
