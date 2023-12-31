@@ -1197,7 +1197,7 @@
           return;
         }
         //der signature of current utxo
-        const sigHash = bsv.crypto.Hash.sha256sha256(preimage);
+        const sigHash = bsv.crypto.Hash.sha256sha256(currentPreimage);
         const sig = bsv.crypto.ECDSA.sign(
           sigHash,
           bsv.PrivateKey.fromWIF(privateKey)
