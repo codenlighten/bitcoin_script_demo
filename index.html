@@ -1204,8 +1204,7 @@
           alert("Please load a transaction to sign");
           return;
         }
-        //der signature of current utxo
-        // Sign the preimage directly
+
         //convert currentPreimage from hex to 32 byte hashbuffer
         const hashBuffer = bsv.crypto.Hash.sha256sha256(currentPreimage);
         const sighashType =
@@ -1215,11 +1214,9 @@
         const sig = bsv.crypto.ECDSA.sign(hashBuffer, privkey, "little").set({
           nhashtype: sighashType,
         });
-        // console.log(sig);
-        // console.log(sig.toTxFormat());
-        // console.log(sig.toDER());
-        // console.log(sig.toDER().toString("hex"));
-        currentStack.push(sig.toDER().toString("hex"));
+        const sigHex = sig.toString();
+        console.log(sigHex);
+        currentStack.push(sigHex);
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
         const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
         document.getElementById("hex").innerHTML = hex;
