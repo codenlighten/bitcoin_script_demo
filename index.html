@@ -1214,7 +1214,7 @@
         // console.log(sig.toTxFormat());
         // console.log(sig.toDER());
         // console.log(sig.toDER().toString("hex"));
-        currentStack.push(sig.toDER().toString("hex"));
+        currentStack.push(sig.toTxFormat().toString("hex"));
 
         const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
         const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
