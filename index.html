@@ -314,14 +314,17 @@
       <!-- file -->
       <p>Upload File</p>
       <input type="file" id="file" />
-      <button id="addData">Add Plain Data</button>
-      <button id="addHashData">Add Hash of Data (OP_SHA256)</button>
-      <!-- double hash -->
-      <button id="addDoubleHashData">
-        Add Double Hash of Data (OP_HASH256)
-      </button>
-      <!-- add signature of current stack -->
-      <button id="addSignature">Add Signature of Current Stack</button>
+      <div class="buttons">
+        <button id="addData">Add Plain Data</button>
+        <button id="addHashData">Add Hash of Data (OP_SHA256)</button>
+        <!-- double hash -->
+        <button id="addDoubleHashData">
+          Add Double Hash of Data (OP_HASH256)
+        </button>
+        <!-- add signature of current stack -->
+        <button id="addSignature">Add Signature of Current Stack</button>
+      </div>
+
       <div class="alerts">
         <input type="checkbox" id="alertCheck" />
         <label for="alertCheck">Turn on alerts</label>
