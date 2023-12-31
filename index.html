@@ -1255,18 +1255,18 @@
         const txHex = await getTxHex(txid);
         // console.log(txInfo);
         console.log(txHex);
-        const tx = new bsv.Transaction(txHex);
-        console.log(tx);
-        const satoshis = tx.outputs[0].satoshis;
-        console.log(satoshis);
-        const lockingScript = tx.outputs[0].script;
+        const txinfo = bsv.Transaction(txHex);
+        const lockingScript = txinfo.outputs[0].script;
         //add to current utxos
         const utxo = {
           txid: txid,
           vout: 0,
           script: lockingScript.toHex(),
-          satoshis: tx.outputs[0].satoshis,
+          satoshis: txinfo.outputs[0].satoshis,
         };
+        const tx = new bsv.Transaction().from(utxo);
+        console.log(tx);
+
         const preimage = bsv.Transaction.sighash
           .sighashPreimage(
             tx,
@@ -1275,9 +1275,9 @@
               bsv.crypto.Signature.SIGHASH_FORKID,
             //input
             0,
-            lockingScript.toHex(),
+            lockingScript,
             //amount in BN
-            new bsv.crypto.BN(tx.outputs[0].satoshis),
+            new bsv.crypto.BN(txinfo.outputs[0].satoshis),
             //flags
             bsv.Script.Interpreter.SCRIPT_ENABLE_SIGHASH_FORKID
           )
@@ -1294,7 +1294,7 @@
           txid: txid,
           vout: 0,
           script: lockingScript.toHex(),
-          satoshis: tx.outputs[0].satoshis,
+          satoshis: txinfo.outputs[0].satoshis,
           preimage: preimage.toString("hex"),
         });
       };
