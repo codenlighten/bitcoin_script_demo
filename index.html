@@ -1146,6 +1146,7 @@
             })
           );
           // get preimage of utxo[0]
+          console.log(sighashType);
           const preimage = bsv.Transaction.sighash
             .sighashPreimage(
               tx,
