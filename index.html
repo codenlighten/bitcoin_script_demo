@@ -958,10 +958,9 @@
         }
         data = data.trim();
         // double hash with hash256
-        const hash = bsv.crypto.Hash.sha256(Buffer.from(data)).toString("hex");
-        const doubleHash = bsv.crypto.Hash.sha256(Buffer.from(hash)).toString(
-          "hex"
-        );
+        const doubleHash = bsv.crypto.Hash.sha256sha256(
+          Buffer.from(data)
+        ).toString("hex");
         console.log(doubleHash);
         currentStack.push(doubleHash);
 
@@ -1261,16 +1260,17 @@
         const txinfo = bsv.Transaction(txHex);
         const lockingScript = txinfo.outputs[0].script;
         //add to current utxos
-        const utxo = {
+        const tx = new bsv.Transaction();
+        tx.from({
           txid: txid,
           vout: 0,
-          script: lockingScript.toHex(),
+          script: lockingScript,
           satoshis: txinfo.outputs[0].satoshis,
-        };
-        const tx = new bsv.Transaction().from(utxo);
+        });
+
         console.log(tx);
         sighashType =
-          bsv.crypto.Signature.SIGHASH_SINGLE |
+          bsv.crypto.Signature.SIGHASH_NONE |
           bsv.crypto.Signature.SIGHASH_FORKID;
         const preimage = bsv.Transaction.sighash
           .sighashPreimage(
