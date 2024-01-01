@@ -348,7 +348,7 @@
       <input value="0" type="text" id="nLocktime" />
       <div class="sigHashFlag">
         <select name="" id="sighashSelect">
-          <option value="null">Choose Sighash Flag</option>
+          <option value="null" disabled selected>Choose Sighash Flag</option>
           <option value="SIGHASH_NONE">SIGHASH_NONE</option>
           <option value="SIGHASH_ALL">SIGHASH_ALL</option>
           <option value="SIGHASH_SINGLE">SIGHASH_SINGLE</option>
@@ -404,7 +404,9 @@
       let redeemScriptCheck = false;
 
       let sighashType =
-        bsv.crypto.Signature.SIGHASH_ALL | bsv.crypto.Signature.SIGHASH_FORKID;
+        "bsv.crypto.Signature.SIGHASH_ALL | bsv.crypto.Signature.SIGHASH_FORKID";
+      //set select to option 0
+
       const Buffer = bsv.deps.Buffer;
       const path = "m/44'/0'/0'/0/0";
       const generateKeys = () => {
