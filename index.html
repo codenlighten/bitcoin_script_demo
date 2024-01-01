@@ -214,6 +214,8 @@
         <option value="OP_ABS">OP_ABS</option>
         <option value="OP_ADD">OP_ADD</option>
         <option value="OP_AND">OP_AND</option>
+        <!-- bin2num -->
+        <option value="OP_BIN2NUM">OP_BIN2NUM</option>
         <option value="OP_BOOLAND">OP_BOOLAND</option>
         <option value="OP_BOOLOR">OP_BOOLOR</option>
         <option value="OP_CAT">OP_CAT</option>
@@ -266,6 +268,8 @@
         <option value="OP_NUMEQUAL">OP_NUMEQUAL</option>
         <option value="OP_NUMEQUALVERIFY">OP_NUMEQUALVERIFY</option>
         <option value="OP_NUMNOTEQUAL">OP_NUMNOTEQUAL</option>
+        <!-- num2bin -->
+        <option value="OP_NUM2BIN">OP_NUM2BIN</option>
         <option value="OP_OR">OP_OR</option>
         <option value="OP_OVER">OP_OVER</option>
         <option value="OP_PICK">OP_PICK</option>
@@ -342,7 +346,7 @@
       <!-- addPubkey -->
       <p>Choose nLocktime</p>
       <input value="0" type="text" id="nLocktime" />
-
+      <button id="addCurrentPreimage">Add Current Preimage</button>
       <button id="addPubKey">Add Recipient(PK)</button>
       <button id="addPubKeyHash">Add Recipient(PKHash)</button>
       <button id="broadcast">Generate Broadcast Script</button>
