@@ -363,6 +363,11 @@
     </div>
     <div class="container" id="finalScript">
       <h2>Final Script</h2>
+      <!-- checkbox for redeem script check-->
+      <div class="alerts">
+        <input type="checkbox" id="redeemCheck" />
+        <label for="redeemCheck">Redeem Script Check</label>
+      </div>
       <button style="display: none" id="genBroadcast">Broadcast TX</button>
       <p id="lockResults" title="click to copy"></p>
       <p id="preimage"></p>
@@ -384,6 +389,8 @@
       // current preimage
       let currentPreimage = "";
       let currentLockingScript = "";
+      let redeemScriptCheck = false;
+
       let sighashType =
         bsv.crypto.Signature.SIGHASH_ALL | bsv.crypto.Signature.SIGHASH_FORKID;
       const Buffer = bsv.deps.Buffer;
@@ -1099,29 +1106,26 @@
       });
 
       const buildLockingScript = async () => {
+        redeemScriptCheck = document.getElementById("redeemCheck").checked;
         const address = document.getElementById("address").innerHTML;
         const addy = bsv.Address.fromString(address);
         const nLocktime = parseInt(document.getElementById("nLocktime").value);
         let utxos = [];
-        if (currentUtxos.length === 0) {
-          utxos = await getUtxosWhatsOnchain(addy);
-          console.log(address);
-          utxos = utxos.filter((utxo) => utxo.satoshis > 1);
-        } else {
-          utxos = currentUtxos;
-        }
-        console.log(address);
 
-        console.log(utxos);
         const tx = new bsv.Transaction();
         //nlocktime
-        if (nLocktime > 0) {
-          tx.nLockTime = nLocktime;
-        }
-        tx.from(utxos);
+        // if (nLocktime > 0) {
+        //   tx.nLockTime = nLocktime;
+        // }
         let txHex = "";
-        if (currentUtxos.length === 0) {
+        if (!redeemScriptCheck) {
+          utxos = await getUtxosWhatsOnchain(addy);
+          console.log(address, utxos);
+          utxos = utxos.filter((utxo) => utxo.satoshis > 1);
+          tx.from(utxos);
+          console.log("locking script", redeemScriptCheck);
           const amount = document.getElementById("amount").value;
+          console.log(amount);
           const lock = bsv.Script.fromASM(currentStack.join(" "));
           tx.addOutput(
             new bsv.Transaction.Output({
@@ -1130,38 +1134,43 @@
             })
           );
           //get preimage of utxo[0]
-          const preimage = bsv.Transaction.sighash
-            .sighashPreimage(
-              tx,
-              //sighash type
-              bsv.crypto.Signature.SIGHASH_ALL |
-                bsv.crypto.Signature.SIGHASH_FORKID,
-              //input
-              0,
-              utxos[0].script,
-              //amount in BN
-              new bsv.crypto.BN(amount),
-              //flags
-              bsv.Script.Interpreter.SCRIPT_ENABLE_SIGHASH_FORKID
-            )
-            .toString("hex");
-          sighashType =
-            bsv.crypto.Signature.SIGHASH_ALL |
-            bsv.crypto.Signature.SIGHASH_FORKID;
-          currentPreimage = Buffer.from(preimage, "hex");
-          console.log(preimage);
-          document.getElementById(
-            "preimage"
-          ).innerHTML = `Preimage: ${preimage}`;
+          // const preimage = bsv.Transaction.sighash
+          //   .sighashPreimage(
+          //     tx,
+          //     //sighash type
+          //     bsv.crypto.Signature.SIGHASH_ALL |
+          //       bsv.crypto.Signature.SIGHASH_FORKID,
+          //     //input
+          //     0,
+          //     utxos[0].script,
+          //     //amount in BN
+          //     new bsv.crypto.BN(amount),
+          //     //flags
+          //     bsv.Script.Interpreter.SCRIPT_ENABLE_SIGHASH_FORKID
+          //   )
+          //   .toString("hex");
+
+          // currentPreimage = Buffer.from(preimage, "hex");
+          // console.log(preimage);
+          // document.getElementById(
+          //   "preimage"
+          // ).innerHTML = `Preimage: ${preimage}`;
           tx.change(addy);
 
           tx.feePerKb(15);
           tx.sign(keys.privateKey);
+          console.log(tx);
           txHex = tx.toString();
         } else {
+          utxos = currentUtxos;
+          console.log(address, utxos);
+          tx.from(utxos);
+          console.log("redeem script");
           // set input script to current stack
-          const redeemScript = bsv.Script.fromASM(currentStack.join(" "));
-          tx.inputs[0].setScript(redeemScript);
+          if (currentStack.length !== 0) {
+            const redeemScript = bsv.Script.fromASM(currentStack.join(" "));
+            tx.inputs[0].setScript(redeemScript);
+          }
           //add currentutxos amount to recipient
           const amount = currentUtxos[0].satoshis;
           tx.addOutput(
