@@ -1119,6 +1119,47 @@
         }
       });
 
+      //create preimage from current utxo
+      document
+        .getElementById("addCurrentPreimage")
+        .addEventListener("click", async () => {
+          let utxo;
+          if (!redeemScriptCheck) {
+            //whatsOnChain
+            currentUtxos = await getUtxosWhatsOnchain(keys.address);
+            currentUtxos = currentUtxos.filter((utxo) => utxo.satoshis > 1);
+            utxo = currentUtxos[0];
+          } else {
+            utxo = currentUtxos[0];
+          }
+          const tx = new bsv.Transaction();
+          tx.from(utxo);
+          const preimage = bsv.Transaction.sighash
+            .sighashPreimage(
+              tx,
+              //sighash type
+              sighashType,
+              //input
+              0,
+              utxo.script,
+              //amount in BN
+              new bsv.crypto.BN(utxo.satoshis),
+              //flags
+              bsv.Script.Interpreter.SCRIPT_ENABLE_SIGHASH_FORKID
+            )
+            .toString("hex");
+          currentPreimage = Buffer.from(preimage, "hex");
+          console.log(preimage);
+          document.getElementById(
+            "preimage"
+          ).innerHTML = `Preimage: ${preimage}`;
+          //add to text area
+          document.getElementById("data").value = preimage;
+
+          //add to stack
+          // currentStack.push(preimage);
+        });
+
       const buildLockingScript = async () => {
         redeemScriptCheck = document.getElementById("redeemCheck").checked;
         const address = document.getElementById("address").innerHTML;
