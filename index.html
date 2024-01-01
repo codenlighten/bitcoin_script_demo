@@ -346,6 +346,14 @@
       <!-- addPubkey -->
       <p>Choose nLocktime</p>
       <input value="0" type="text" id="nLocktime" />
+      <div class="sigHashFlag">
+        <select name="" id="sighashSelect">
+          <option value="null">Choose Sighash Flag</option>
+          <option value="SIGHASH_NONE">SIGHASH_NONE</option>
+          <option value="SIGHASH_ALL">SIGHASH_ALL</option>
+          <option value="SIGHASH_SINGLE">SIGHASH_SINGLE</option>
+        </select>
+      </div>
       <div class="buttons">
         <button id="addCurrentPreimage">Add Current Preimage</button>
         <button id="addPubKey">Add Recipient(PK)</button>
@@ -1142,8 +1150,7 @@
             .sighashPreimage(
               tx,
               //sighash type
-              bsv.crypto.Signature.SIGHASH_ALL |
-                bsv.crypto.Signature.SIGHASH_FORKID,
+              sighashType,
               //input
               0,
               utxos[0].script,
@@ -1267,6 +1274,20 @@
         .getElementById("addSignature")
         .addEventListener("click", addSignature);
 
+      //sighash selector
+
+      document
+        .getElementById("sighashSelect")
+        .addEventListener("change", (e) => {
+          e.preventDefault();
+          console.log(e.target.value);
+          const result = e.target.value;
+          if (result != "null") {
+            sighashType = `bsv.crypto.Signature.${result} | bsv.crypto.Signature.SIGHASH_FORKID;`;
+          }
+          console.log(sighashType);
+        });
+
       const redeemLock = async () => {
         // use current opcode stack for users unlock script
         const txid = document.getElementById("txidInput").value;
@@ -1328,6 +1349,7 @@
         document.getElementById("addData").innerHTML = "Add File Data";
         document.getElementById("addData").style.backgroundColor = "red";
       });
+
       //clear all inputs
       currentStack = [];
       document.getElementById("stack").innerHTML = "";
