@@ -346,10 +346,18 @@
       <!-- addPubkey -->
       <p>Choose nLocktime</p>
       <input value="0" type="text" id="nLocktime" />
-      <button id="addCurrentPreimage">Add Current Preimage</button>
-      <button id="addPubKey">Add Recipient(PK)</button>
-      <button id="addPubKeyHash">Add Recipient(PKHash)</button>
-      <button id="broadcast">Generate Broadcast Script</button>
+      <div class="buttons">
+        <button id="addCurrentPreimage">Add Current Preimage</button>
+        <button id="addPubKey">Add Recipient(PK)</button>
+        <button id="addPubKeyHash">Add Recipient(PKHash)</button>
+        <button id="broadcast">Generate Broadcast Script</button>
+      </div>
+
+      <!-- checkbox for redeem script check-->
+      <div class="alerts">
+        <input type="checkbox" id="redeemCheck" />
+        <label for="redeemCheck">Redeem Script Check</label>
+      </div>
     </div>
     <div class="container" id="currentStack">
       <h2>Current Stack</h2>
@@ -363,11 +371,7 @@
     </div>
     <div class="container" id="finalScript">
       <h2>Final Script</h2>
-      <!-- checkbox for redeem script check-->
-      <div class="alerts">
-        <input type="checkbox" id="redeemCheck" />
-        <label for="redeemCheck">Redeem Script Check</label>
-      </div>
+
       <button style="display: none" id="genBroadcast">Broadcast TX</button>
       <p id="lockResults" title="click to copy"></p>
       <p id="preimage"></p>
@@ -1133,28 +1137,28 @@
               satoshis: parseInt(amount),
             })
           );
-          //get preimage of utxo[0]
-          // const preimage = bsv.Transaction.sighash
-          //   .sighashPreimage(
-          //     tx,
-          //     //sighash type
-          //     bsv.crypto.Signature.SIGHASH_ALL |
-          //       bsv.crypto.Signature.SIGHASH_FORKID,
-          //     //input
-          //     0,
-          //     utxos[0].script,
-          //     //amount in BN
-          //     new bsv.crypto.BN(amount),
-          //     //flags
-          //     bsv.Script.Interpreter.SCRIPT_ENABLE_SIGHASH_FORKID
-          //   )
-          //   .toString("hex");
+          // get preimage of utxo[0]
+          const preimage = bsv.Transaction.sighash
+            .sighashPreimage(
+              tx,
+              //sighash type
+              bsv.crypto.Signature.SIGHASH_ALL |
+                bsv.crypto.Signature.SIGHASH_FORKID,
+              //input
+              0,
+              utxos[0].script,
+              //amount in BN
+              new bsv.crypto.BN(amount),
+              //flags
+              bsv.Script.Interpreter.SCRIPT_ENABLE_SIGHASH_FORKID
+            )
+            .toString("hex");
 
-          // currentPreimage = Buffer.from(preimage, "hex");
-          // console.log(preimage);
-          // document.getElementById(
-          //   "preimage"
-          // ).innerHTML = `Preimage: ${preimage}`;
+          currentPreimage = Buffer.from(preimage, "hex");
+          console.log(preimage);
+          document.getElementById(
+            "preimage"
+          ).innerHTML = `Preimage: ${preimage}`;
           tx.change(addy);
 
           tx.feePerKb(15);
