@@ -379,6 +379,9 @@
       let currentUtxos = [];
       // current preimage
       let currentPreimage = "";
+      let currentLockingScript = "";
+      let sighashType =
+        bsv.crypto.Signature.SIGHASH_ALL | bsv.crypto.Signature.SIGHASH_FORKID;
       const Buffer = bsv.deps.Buffer;
       const path = "m/44'/0'/0'/0/0";
       const generateKeys = () => {
@@ -1139,6 +1142,9 @@
               bsv.Script.Interpreter.SCRIPT_ENABLE_SIGHASH_FORKID
             )
             .toString("hex");
+          sighashType =
+            bsv.crypto.Signature.SIGHASH_ALL |
+            bsv.crypto.Signature.SIGHASH_FORKID;
           currentPreimage = Buffer.from(preimage, "hex");
           console.log(preimage);
           document.getElementById(
@@ -1207,9 +1213,6 @@
 
         //convert currentPreimage from hex to 32 byte hashbuffer
         const hashBuffer = bsv.crypto.Hash.sha256sha256(currentPreimage);
-        const sighashType =
-          bsv.crypto.Signature.SIGHASH_ALL |
-          bsv.crypto.Signature.SIGHASH_FORKID;
         const privkey = bsv.PrivateKey.fromString(privateKey);
         const sig = bsv.crypto.ECDSA.sign(hashBuffer, privkey, "little").set({
           nhashtype: sighashType,
@@ -1266,13 +1269,14 @@
         };
         const tx = new bsv.Transaction().from(utxo);
         console.log(tx);
-
+        sighashType =
+          bsv.crypto.Signature.SIGHASH_SINGLE |
+          bsv.crypto.Signature.SIGHASH_FORKID;
         const preimage = bsv.Transaction.sighash
           .sighashPreimage(
             tx,
-            //sighash type
-            bsv.crypto.Signature.SIGHASH_ALL |
-              bsv.crypto.Signature.SIGHASH_FORKID,
+            //sighash single
+            sighashType,
             //input
             0,
             lockingScript,
@@ -1284,6 +1288,7 @@
           .toString("hex");
         //add preimage to text area
         document.getElementById("data").value = preimage;
+
         // scroll to data
         currentPreimage = Buffer.from(preimage, "hex");
         document.getElementById("data").scrollIntoView();
