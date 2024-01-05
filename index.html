@@ -1858,6 +1858,7 @@
         const stackEl = document.createElement("div");
         stackEl.innerHTML = script.toASM();
         document.getElementById("stack").appendChild(stackEl);
+        status.innerHTML = "Op Push Tx Added";
         stackEl.addEventListener("click", () => {
           //remove from stack
           const index = currentStack.indexOf(script.toASM());
@@ -1874,7 +1875,6 @@
           document.getElementById("asm").innerHTML = asm;
           document.getElementById("binary").innerHTML = hexToBinary(hex);
         });
-        status = "Op Push Tx Added";
       };
 
       document
