@@ -304,6 +304,7 @@
       </select>
       <button id="addOpCode">Add OpCode</button>
       <button id="p2pkh">P2PKH</button>
+      <button id="addOpPushTx">Add OpPushTx Lock</button>
       <!-- add data -->
       <p>Add Data</p>
       <!-- checkbox turn off alerts -->
@@ -1148,8 +1149,7 @@
               bsv.Script.Interpreter.SCRIPT_ENABLE_SIGHASH_FORKID
             )
             .toString("hex");
-          currentPreimage = Buffer.from(preimage, "hex");
-          console.log(preimage);
+          currentPreimage = preimage;
           document.getElementById(
             "preimage"
           ).innerHTML = `Preimage: ${preimage}`;
@@ -1405,6 +1405,450 @@
       document.getElementById("data").value = "";
       document.getElementById("file").value = "";
       document.getElementById("amount").value = "1";
+
+      //op push tx script
+      // OP_HASH256 OP_16 OP_SPLIT OP_15 OP_SPLIT OP_SWAP OP_14 OP_SPLIT OP_SWAP OP_13 OP_SPLIT OP_SWAP OP_12 OP_SPLIT OP_SWAP OP_11 OP_SPLIT OP_SWAP OP_10 OP_SPLIT OP_SWAP OP_9 OP_SPLIT OP_SWAP OP_8 OP_SPLIT OP_SWAP OP_7 OP_SPLIT OP_SWAP OP_6 OP_SPLIT OP_SWAP OP_5 OP_SPLIT OP_SWAP OP_4 OP_SPLIT OP_SWAP OP_3 OP_SPLIT OP_SWAP OP_2 OP_SPLIT OP_SWAP OP_1 OP_SPLIT OP_SWAP OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_SWAP OP_15 OP_SPLIT OP_SWAP OP_14 OP_SPLIT OP_SWAP OP_13 OP_SPLIT OP_SWAP OP_12 OP_SPLIT OP_SWAP OP_11 OP_SPLIT OP_SWAP OP_10 OP_SPLIT OP_SWAP OP_9 OP_SPLIT OP_SWAP OP_8 OP_SPLIT OP_SWAP OP_7 OP_SPLIT OP_SWAP OP_6 OP_SPLIT OP_SWAP OP_5 OP_SPLIT OP_SWAP OP_4 OP_SPLIT OP_SWAP OP_3 OP_SPLIT OP_SWAP OP_2 OP_SPLIT OP_SWAP OP_1 OP_SPLIT OP_SWAP OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT 00 OP_CAT OP_BIN2NUM OP_1ADD 414136d08c5ed2bf3ba048afe6dcaebafeffffffffffffffffffffffffffffff00 OP_TUCK OP_MOD OP_2DUP OP_SWAP OP_2 OP_DIV OP_GREATERTHAN OP_IF OP_SUB OP_ELSE OP_NIP OP_ENDIF OP_SIZE OP_DUP 24 OP_ADD 30 OP_SWAP OP_CAT 022079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f8179802 OP_CAT OP_SWAP OP_CAT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT 41 OP_CAT 038ff83d8cf12121491609c4939dc11c4aa35503508fe432dc5a5c1905608b9218 OP_CHECKSIGVERIFY
+
+      const addOpPushTx = () => {
+        const script = new bsv.Script();
+        script.add(bsv.Opcode.OP_HASH256);
+        script.add(bsv.Opcode.OP_16);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_15);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_14);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_13);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_12);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_11);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_10);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_9);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_8);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_7);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_6);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_5);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_4);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_3);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_2);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_1);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_15);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_14);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_13);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_12);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_11);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_10);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_9);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_8);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_7);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_6);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_5);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_4);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_3);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_2);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_1);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_CAT);
+        //00
+        script.add(bsv.Opcode.OP_FALSE);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_BIN2NUM);
+        script.add(bsv.Opcode.OP_1ADD);
+
+        // "414136d08c5ed2bf3ba048afe6dcaebafeffffffffffffffffffffffffffffff00"
+        script.add(
+          Buffer.from(
+            "414136d08c5ed2bf3ba048afe6dcaebafeffffffffffffffffffffffffffffff00",
+            "hex"
+          )
+        );
+        script.add(bsv.Opcode.OP_TUCK);
+        script.add(bsv.Opcode.OP_MOD);
+        script.add(bsv.Opcode.OP_2DUP);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_2);
+        script.add(bsv.Opcode.OP_DIV);
+        script.add(bsv.Opcode.OP_GREATERTHAN);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_SUB);
+        script.add(bsv.Opcode.OP_ELSE);
+        script.add(bsv.Opcode.OP_NIP);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.fromNumber(24));
+        script.add(bsv.Opcode.OP_ADD);
+        script.add(bsv.Opcode.fromNumber(30));
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_CAT);
+
+        //    "022079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f8179802"
+        script.add(
+          Buffer.from(
+            "022079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f8179802",
+            "hex"
+          )
+        );
+
+        //  OP_CAT OP_SWAP OP_CAT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT 41 OP_CAT 038ff83d8cf12121491609c4939dc11c4aa35503508fe432dc5a5c1905608b9218 OP_CHECKSIGVERIFY
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_CAT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_SIZE);
+        script.add(bsv.Opcode.OP_DUP);
+        script.add(bsv.Opcode.OP_IF);
+        script.add(bsv.Opcode.OP_1SUB);
+        script.add(bsv.Opcode.OP_ENDIF);
+        // OP_SPLIT OP_SWAP OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT 41 OP_CAT 038ff83d8cf12121491609c4939dc11c4aa35503508fe432dc5a5c1905608b9218 OP_CHECKSIGVERIFY
+        script.add(bsv.Opcode.OP_SPLIT);
+        script.add(bsv.Opcode.OP_SWAP);
+        script.add(bsv.Opcode.OP_CAT);
+
+        //       "038ff83d8cf12121491609c4939dc11c4aa35503508fe432dc5a5c1905608b9218"
+        script.add(
+          Buffer.from(
+            "038ff83d8cf12121491609c4939dc11c4aa35503508fe432dc5a5c1905608b9218",
+            "hex"
+          )
+        );
+        script.add(bsv.Opcode.OP_CHECKSIGVERIFY);
+        //  add to stack
+        currentStack.push(script.toASM());
+        const hex = script.toHex();
+        const asm = script.toASM();
+        document.getElementById("hex").innerHTML = hex;
+        document.getElementById("asm").innerHTML = asm;
+        document.getElementById("binary").innerHTML = hexToBinary(hex);
+        console.log(hex);
+        const stackEl = document.createElement("div");
+        stackEl.innerHTML = script.toASM();
+        document.getElementById("stack").appendChild(stackEl);
+        stackEl.addEventListener("click", () => {
+          //remove from stack
+          const index = currentStack.indexOf(script.toASM());
+          if (index > -1) {
+            currentStack.splice(index, 1);
+          }
+          console.log(currentStack);
+          //remove from stack display
+          stackEl.remove();
+          //update locking script
+          const hex = bsv.Script.fromASM(currentStack.join(" ")).toHex();
+          const asm = bsv.Script.fromASM(currentStack.join(" ")).toASM();
+          document.getElementById("hex").innerHTML = hex;
+          document.getElementById("asm").innerHTML = asm;
+          document.getElementById("binary").innerHTML = hexToBinary(hex);
+        });
+      };
+
+      document
+        .getElementById("addOpPushTx")
+        .addEventListener("click", addOpPushTx);
     </script>
   </body>
 </html>
