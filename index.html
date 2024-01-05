@@ -305,6 +305,8 @@
       <button id="addOpCode">Add OpCode</button>
       <button id="p2pkh">P2PKH</button>
       <button id="addOpPushTx">Add OpPushTx Lock</button>
+      <!-- status -->
+      <p id="status"></p>
       <!-- add data -->
       <p>Add Data</p>
       <!-- checkbox turn off alerts -->
@@ -398,6 +400,7 @@
       <p>&copy; 2023 CodenLighten. All Rights Reserved</p>
     </div>
     <script>
+      const status = document.getElementById("status");
       let currentUtxos = [];
       // current preimage
       let currentPreimage = "";
@@ -429,6 +432,7 @@
       document
         .getElementById("importMnemonic")
         .addEventListener("click", () => {
+          status.innerHTML = "Importing Mnemonic...";
           const mnemonic = document.getElementById("mnemonicInput").value;
           //   from mnemonic string
           const mnemonic2 = bsvMnemonic.fromString(mnemonic);
@@ -454,6 +458,7 @@
           getBalance(keys.address).then((balance) => {
             document.getElementById("balance").innerHTML = balance.balance;
           });
+          status.innerHTML = "Mnemonic Imported";
         });
 
       const getBalance = async (address) => {
@@ -660,6 +665,7 @@
       };
 
       const addNumber = () => {
+        status.innerHTML = "Adding Number...";
         const number = parseInt(document.getElementById("number").value, 10);
         currentStack.push(numToHex(number));
         console.log(currentStack);
@@ -688,6 +694,7 @@
           document.getElementById("asm").innerHTML = asm;
           document.getElementById("binary").innerHTML = hexToBinary(hex);
         });
+        status.innerHTML = "Number Added";
       };
 
       // Additional function to convert hex to binary
@@ -709,6 +716,7 @@
       let textCheck = false;
 
       const addData = async () => {
+        status.innerHTML = "Adding Data...";
         const alertCheck = document.getElementById("alertCheck").checked;
         let data = "";
         let bytes = [];
@@ -835,8 +843,11 @@
           document.getElementById("asm").innerHTML = asm;
           document.getElementById("binary").innerHTML = hexToBinary(hex);
         });
+        status.innerHTML = "Data Added";
       };
       const addPubKeyHash = () => {
+        //from keys
+        status.innerHTML = "Adding PubKeyHash...";
         const receiever = document.getElementById("receiver").value;
         const address = bsv.Address.fromString(receiever);
         const pubKeyHash = address.hashBuffer.toString("hex");
@@ -867,11 +878,13 @@
           document.getElementById("asm").innerHTML = asm;
           document.getElementById("binary").innerHTML = hexToBinary(hex);
         });
+        status.innerHTML = "PubKeyHash Added";
       };
 
       //add pubkey
       const addPubKey = () => {
         //from keys
+        status.innerHTML = "Adding PubKey...";
         const privateKey = bsv.PrivateKey.fromString(keys.privateKey);
         const pubKey = bsv.PublicKey.fromPrivateKey(privateKey);
         currentStack.push(pubKey.toString());
@@ -902,12 +915,14 @@
           document.getElementById("asm").innerHTML = asm;
           document.getElementById("binary").innerHTML = hexToBinary(hex);
         });
+        status.innerHTML = "PubKey Added";
       };
 
       document.getElementById("addPubKey").addEventListener("click", () => {
         addPubKey();
       });
       const addHashData = () => {
+        status.innerHTML = "Adding Hash of Data...";
         let data = document.getElementById("data").value;
         if (!data) {
           alert("Please enter data");
@@ -974,9 +989,11 @@
           document.getElementById("asm").innerHTML = asm;
           document.getElementById("binary").innerHTML = hexToBinary(hex);
         });
+        status.innerHTML = "Hash of Data Added";
       };
       // add double hash data
       const addDoubleHashData = () => {
+        status.innerHTML = "Adding Double Hash of Data...";
         let data = document.getElementById("data").value;
         if (!data) {
           alert("Please enter data");
@@ -1046,6 +1063,7 @@
           document.getElementById("asm").innerHTML = asm;
           document.getElementById("binary").innerHTML = hexToBinary(hex);
         });
+        status.innerHTML = "Double Hash of Data Added";
       };
       document
         .getElementById("addDoubleHashData")
@@ -1054,6 +1072,7 @@
         });
       //add p2pkh
       document.getElementById("p2pkh").addEventListener("click", () => {
+        status.innerHTML = "Adding P2PKH...";
         //OP_DUP OP_HASH160 <Public Key Hash> OP_EQUALVERIFY OP_CHECKSIG
         const recipientAddress = document.getElementById("receiver").value;
         const address = bsv.Address.fromString(recipientAddress);
@@ -1091,6 +1110,7 @@
             document.getElementById("binary").innerHTML = hexToBinary(hex);
           });
         });
+        status.innerHTML = "P2PKH Added";
       });
 
       document.getElementById("addOpCode").addEventListener("click", addOpCode);
@@ -1124,6 +1144,7 @@
       document
         .getElementById("addCurrentPreimage")
         .addEventListener("click", async () => {
+          status.innerHTML = "Adding Current Preimage...";
           let utxo;
           if (!redeemScriptCheck) {
             //whatsOnChain
@@ -1155,12 +1176,13 @@
           ).innerHTML = `Preimage: ${preimage}`;
           //add to text area
           document.getElementById("data").value = preimage;
-
+          status.innerHTML = "Current Preimage Added";
           //add to stack
           // currentStack.push(preimage);
         });
 
       const buildLockingScript = async () => {
+        status.innerHTML = "Building Locking Script...";
         redeemScriptCheck = document.getElementById("redeemCheck").checked;
         const address = document.getElementById("address").innerHTML;
         const addy = bsv.Address.fromString(address);
@@ -1248,6 +1270,7 @@
         document.getElementById("lockResults").scrollIntoView();
         //display broadcast button
         document.getElementById("genBroadcast").style.display = "block";
+        status.innerHTML = "Locking Script Built";
       };
 
       document.getElementById("broadcast").addEventListener("click", () => {
@@ -1272,6 +1295,7 @@
 
       // add signature to current preimage
       const addSignature = async () => {
+        status.innerHTML = "Adding Signature...";
         const privateKey = keys.privateKey;
         if (!currentPreimage) {
           alert("Please load a transaction to sign");
@@ -1312,6 +1336,7 @@
           document.getElementById("asm").innerHTML = asm;
           document.getElementById("binary").innerHTML = hexToBinary(hex);
         });
+        status.innerHTML = "Signature Added";
       };
 
       document
@@ -1333,6 +1358,7 @@
         });
 
       const redeemLock = async () => {
+        status.innerHTML = "Redeeming Lock...";
         // use current opcode stack for users unlock script
         const txid = document.getElementById("txidInput").value;
         // const txInfo = await getTxInfo(txid);
@@ -1373,6 +1399,7 @@
 
         // scroll to data
         currentPreimage = Buffer.from(preimage, "hex");
+
         document.getElementById("data").scrollIntoView();
         alert(
           "transaction loaded as current utxo, preimage added to data to use in unlocking script if needed"
@@ -1384,6 +1411,8 @@
           satoshis: txinfo.outputs[0].satoshis,
           preimage: preimage.toString("hex"),
         });
+        console.log(currentUtxos);
+        status.innerHTML = "";
       };
       document.getElementById("redeem").addEventListener("click", redeemLock);
       //import mnemonic
@@ -1410,6 +1439,7 @@
       // OP_HASH256 OP_16 OP_SPLIT OP_15 OP_SPLIT OP_SWAP OP_14 OP_SPLIT OP_SWAP OP_13 OP_SPLIT OP_SWAP OP_12 OP_SPLIT OP_SWAP OP_11 OP_SPLIT OP_SWAP OP_10 OP_SPLIT OP_SWAP OP_9 OP_SPLIT OP_SWAP OP_8 OP_SPLIT OP_SWAP OP_7 OP_SPLIT OP_SWAP OP_6 OP_SPLIT OP_SWAP OP_5 OP_SPLIT OP_SWAP OP_4 OP_SPLIT OP_SWAP OP_3 OP_SPLIT OP_SWAP OP_2 OP_SPLIT OP_SWAP OP_1 OP_SPLIT OP_SWAP OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_SWAP OP_15 OP_SPLIT OP_SWAP OP_14 OP_SPLIT OP_SWAP OP_13 OP_SPLIT OP_SWAP OP_12 OP_SPLIT OP_SWAP OP_11 OP_SPLIT OP_SWAP OP_10 OP_SPLIT OP_SWAP OP_9 OP_SPLIT OP_SWAP OP_8 OP_SPLIT OP_SWAP OP_7 OP_SPLIT OP_SWAP OP_6 OP_SPLIT OP_SWAP OP_5 OP_SPLIT OP_SWAP OP_4 OP_SPLIT OP_SWAP OP_3 OP_SPLIT OP_SWAP OP_2 OP_SPLIT OP_SWAP OP_1 OP_SPLIT OP_SWAP OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT 00 OP_CAT OP_BIN2NUM OP_1ADD 414136d08c5ed2bf3ba048afe6dcaebafeffffffffffffffffffffffffffffff00 OP_TUCK OP_MOD OP_2DUP OP_SWAP OP_2 OP_DIV OP_GREATERTHAN OP_IF OP_SUB OP_ELSE OP_NIP OP_ENDIF OP_SIZE OP_DUP 24 OP_ADD 30 OP_SWAP OP_CAT 022079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f8179802 OP_CAT OP_SWAP OP_CAT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_SIZE OP_DUP OP_IF OP_1SUB OP_ENDIF OP_SPLIT OP_SWAP OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT OP_CAT 41 OP_CAT 038ff83d8cf12121491609c4939dc11c4aa35503508fe432dc5a5c1905608b9218 OP_CHECKSIGVERIFY
 
       const addOpPushTx = () => {
+        status.innerHTML = "Adding Op Push Tx...";
         const script = new bsv.Script();
         script.add(bsv.Opcode.OP_HASH256);
         script.add(bsv.Opcode.OP_16);
@@ -1844,6 +1874,7 @@
           document.getElementById("asm").innerHTML = asm;
           document.getElementById("binary").innerHTML = hexToBinary(hex);
         });
+        status = "Op Push Tx Added";
       };
 
       document
